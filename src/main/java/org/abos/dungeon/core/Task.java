@@ -1,14 +1,12 @@
 package org.abos.dungeon.core;
 
-public abstract class Task implements Runnable {
+import java.util.function.Consumer;
 
-    protected boolean solved;
+/**
+ * Marker interface.
+ */
+public interface Task extends Consumer<Player> {
 
-    public boolean isSolved() {
-        return solved;
-    }
+    // might be extended in the future
 
-    public void setSolved(boolean solved) {
-        this.solved = solved;
-    }
 }

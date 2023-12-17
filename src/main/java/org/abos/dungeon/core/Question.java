@@ -7,9 +7,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Random;
-import java.util.function.BiFunction;
 
-public abstract class Question extends Task {
+public class Question implements Task {
 
     protected static final Map<String, Double> CONSTANTS = new HashMap<>();
 
@@ -20,11 +19,11 @@ public abstract class Question extends Task {
     static {
         CONSTANTS.put("Pi", Math.PI);
         CONSTANTS.put("Euler's number e", Math.E);
-        CONSTANTS.put("Golden Ratio Φ", (Math.sqrt(5d)+1)/2);
+        CONSTANTS.put("the Golden Ratio Φ", (Math.sqrt(5d)+1)/2);
         CONSTANTS.put("ln 2", Math.log(2d));
         CONSTANTS.put("Pythagoras' constant √2", Math.sqrt(2d));
         CONSTANTS.put("Theodorus' constant √3", Math.sqrt(3d));
-        CONSTANTS.put("Euler-Mascheroni constant γ", 0.57721566490153286060);
+        CONSTANTS.put("the Euler-Mascheroni constant γ", 0.57721566490153286060);
     }
 
     public Question(final String question, final String answer) {
@@ -32,14 +31,20 @@ public abstract class Question extends Task {
         this.answer = Objects.requireNonNull(answer);
     }
 
-    @Override
-    public void run() {
-        if (!isSolved() && displayQuestion()) {
-            setSolved(true);
-        }
+    public String getQuestion() {
+        return question;
     }
 
-    protected abstract boolean displayQuestion();
+    public String getAnswer() {
+        return answer;
+    }
+
+    @Override
+    public void accept(final Player player) {
+        if (player.displayQuestion(this)) {
+            player.clearCurrentTask();
+        }
+    }
 
     protected static int getSummandUpperLimit(final int roomNumber) {
         if (roomNumber == Integer.MAX_VALUE) {
@@ -61,7 +66,7 @@ public abstract class Question extends Task {
         return (int)Math.round(Math.log10(roomNumber+1))+1;
     }
 
-    public static Question getAdditionQuestion(final BiFunction<String, String, Question> constructor, final Random random, final int roomNumber) {
+    public static Question getAdditionQuestion(final Random random, final int roomNumber) {
         int a, b;
         while (true) {
             a = random.nextInt(getSummandUpperLimit(roomNumber));
@@ -76,10 +81,10 @@ public abstract class Question extends Task {
             }
             catch (ArithmeticException ex) {/* Ignore and retry. */}
         }
-        return constructor.apply(String.format("What is %d + %d? ", a, b), Integer.toString(a+b));
+        return new Question(String.format("What is %d + %d? ", a, b), Integer.toString(a+b));
     }
 
-    public static Question getSubtractionQuestion(final BiFunction<String, String, Question> constructor, final Random random, final int roomNumber) {
+    public static Question getSubtractionQuestion(final Random random, final int roomNumber) {
         int a, b;
         while (true) {
             a = random.nextInt(getSummandUpperLimit(roomNumber));
@@ -94,10 +99,10 @@ public abstract class Question extends Task {
             }
             catch (ArithmeticException ex) {/* Ignore and retry. */}
         }
-        return constructor.apply(String.format("What is %d - %d? ", a, b), Integer.toString(a-b));
+        return new Question(String.format("What is %d - %d? ", a, b), Integer.toString(a-b));
     }
 
-    public static Question getMultiplicationQuestion(final BiFunction<String, String, Question> constructor, final Random random, final int roomNumber) {
+    public static Question getMultiplicationQuestion(final Random random, final int roomNumber) {
         int a, b;
         while (true) {
             a = random.nextInt(getFactorUpperLimit(roomNumber));
@@ -112,10 +117,10 @@ public abstract class Question extends Task {
             }
             catch (ArithmeticException ex) {/* Ignore and retry. */}
         }
-        return constructor.apply(String.format("What is %d * %d? ", a, b), Integer.toString(a*b));
+        return new Question(String.format("What is %d * %d? ", a, b), Integer.toString(a*b));
     }
 
-    public static Question getDivisionQuestion(final BiFunction<String, String, Question> constructor, final Random random, final int roomNumber) {
+    public static Question getDivisionQuestion(final Random random, final int roomNumber) {
         int a, b;
         while (true) {
             a = random.nextInt(getFactorUpperLimit(roomNumber));
@@ -133,20 +138,20 @@ public abstract class Question extends Task {
             }
             catch (ArithmeticException ex) {/* Ignore and retry. */}
         }
-        return constructor.apply(String.format("What is %d / %d? ", a*b, b), Integer.toString(a));
+        return new Question(String.format("What is %d / %d? ", a*b, b), Integer.toString(a));
     }
 
-    public static Question getSimpleArithmQuestion(final BiFunction<String, String, Question> constructor, final Random random, final int roomNumber) {
+    public static Question getSimpleArithmQuestion(final Random random, final int roomNumber) {
         return switch (random.nextInt(4)) {
-            case 0 -> getAdditionQuestion(constructor, random, roomNumber);
-            case 1 -> getSubtractionQuestion(constructor, random, roomNumber);
-            case 2 -> getMultiplicationQuestion(constructor, random, roomNumber);
-            case 3 -> getDivisionQuestion(constructor, random, roomNumber);
+            case 0 -> getAdditionQuestion(random, roomNumber);
+            case 1 -> getSubtractionQuestion(random, roomNumber);
+            case 2 -> getMultiplicationQuestion(random, roomNumber);
+            case 3 -> getDivisionQuestion(random, roomNumber);
             default -> throw new AssertionError("Unreachable code reached!");
         };
     }
 
-    public static Question getSquareQuestion(final BiFunction<String, String, Question> constructor, final Random random, final int roomNumber) {
+    public static Question getSquareQuestion(final Random random, final int roomNumber) {
         int a;
         while (true) {
             a = random.nextInt(getFactorUpperLimit(roomNumber));
@@ -157,10 +162,10 @@ public abstract class Question extends Task {
             }
             catch (ArithmeticException ex) {/* Ignore and retry. */}
         }
-        return constructor.apply(String.format("What is %d²? ", a), Integer.toString(a*a));
+        return new Question(String.format("What is %d²? ", a), Integer.toString(a*a));
     }
 
-    public static Question getSquareRootQuestion(final BiFunction<String, String, Question> constructor, final Random random, final int roomNumber) {
+    public static Question getSquareRootQuestion(final Random random, final int roomNumber) {
         int a;
         while (true) {
             a = random.nextInt(getFactorUpperLimit(roomNumber));
@@ -171,20 +176,20 @@ public abstract class Question extends Task {
             }
             catch (ArithmeticException ex) {/* Ignore and retry. */}
         }
-        return constructor.apply(String.format("What is √%d? ", a*a), Integer.toString(a));
+        return new Question(String.format("What is √%d? ", a*a), Integer.toString(a));
     }
 
-    public static Question getFactorialQuestion(final BiFunction<String, String, Question> constructor, final Random random, final int roomNumber) {
+    public static Question getFactorialQuestion(final Random random, final int roomNumber) {
         final int a = random.nextInt(getFactorialUpperLimit(roomNumber));
-        return constructor.apply(String.format("What is %d!? ", a), Integer.toString(MathUtil.factorial(a)));
+        return new Question(String.format("What is %d!? ", a), Integer.toString(MathUtil.factorial(a)));
     }
 
-    public static Question getDigitQuestion(final BiFunction<String, String, Question> constructor, final Random random, final int roomNumber) {
+    public static Question getDigitQuestion(final Random random, final int roomNumber) {
         final int position = 1 + random.nextInt(getDigitUpperLimit(roomNumber));
         final Map.Entry<String, Double> constant = CollectionUtil.getRandomEntry(CONSTANTS, random);
         final int factor = (int)Math.round(Math.pow(10, position-1));
-        final int digit = (int)Math.floor(constant.getValue()*factor) % factor;
-        return constructor.apply(String.format("What is the %d. digit of %s? ", position, constant.getKey()), Integer.toString(digit));
+        final int digit = (int)Math.floor(constant.getValue()*factor) % 10;
+        return new Question(String.format("What is the %d. digit of %s? ", position, constant.getKey()), Integer.toString(digit));
     }
 
 }

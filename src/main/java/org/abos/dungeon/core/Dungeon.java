@@ -5,33 +5,22 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Random;
 
-public abstract class Dungeon {
+public class Dungeon {
 
-    protected final Room exit = new Room(true, Room.EXIT_ID, this, null);
+    protected final Room exitRoom = new Room(true, Room.EXIT_ID, this, null);
 
-    protected final Room start;
+    protected final Room startRoom;
 
     protected final List<Room> rooms = new ArrayList<>();
 
     protected Random random;
-
-    protected Room currentRoom;
 
     protected TaskFactory taskFactory;
 
     public Dungeon(final Random random, final TaskFactory taskFactory) {
         this.random = Objects.requireNonNull(random);
         this.taskFactory = Objects.requireNonNull(taskFactory);
-        start = generateRoom(exit);
-        currentRoom = start;
-    }
-
-    public Dungeon(final TaskFactory taskFactory) {
-        this(new Random(), taskFactory);
-    }
-
-    public Room getCurrentRoom() {
-        return currentRoom;
+        startRoom = generateRoom(exitRoom);
     }
 
     public Random random() {
@@ -40,6 +29,10 @@ public abstract class Dungeon {
 
     public TaskFactory getTaskFactory() {
         return taskFactory;
+    }
+
+    public Room getStartRoom() {
+        return startRoom;
     }
 
     /**
@@ -92,35 +85,4 @@ public abstract class Dungeon {
         }
         return generateRoom(from);
     }
-
-    /**
-     * Moves the player to the next room.
-     */
-    public void enterNextRoom() {
-        currentRoom.fillDoors();
-        final Room nextRoom = selectDoor();
-        final Room oldRoom = currentRoom;
-        currentRoom = nextRoom;
-        if (currentRoom == null) {
-            return;
-        }
-        final Task newTask = currentRoom.getTask();
-        if (newTask == null) {
-            return;
-        }
-        if (!newTask.isSolved()) {
-            newTask.run();
-            if (!newTask.isSolved()) {
-                currentRoom = oldRoom;
-            }
-        }
-    }
-
-    /**
-     * Let the player select the door of the current room to go through.
-     * The rooms behind the doors are guaranteed to be generated
-     * when this method is called.
-     * @return the next room for the player
-     */
-    protected abstract Room selectDoor();
 }

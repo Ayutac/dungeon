@@ -1,20 +1,14 @@
 package org.abos.dungeon.cmd;
 
-import org.abos.dungeon.core.Dungeon;
-import org.abos.dungeon.core.Room;
-import org.abos.dungeon.core.TaskFactory;
+import org.abos.dungeon.core.*;
 
 import java.util.Random;
 import java.util.Scanner;
 
-public class CmdDungeon extends Dungeon {
+public class CmdPlayer extends Player {
 
-    public CmdDungeon(final Random random) {
-        super(random, new CmdTaskFactory(random));
-    }
-
-    public CmdDungeon() {
-        this(new Random());
+    public CmdPlayer(Room startRoom) {
+        super(startRoom);
     }
 
     @Override
@@ -72,14 +66,19 @@ public class CmdDungeon extends Dungeon {
     }
 
     @Override
-    public TaskFactory getTaskFactory() {
-        return taskFactory;
+    protected boolean displayQuestion(final Question question) {
+        final Scanner scanner = new Scanner(System.in);
+        System.out.print(question.getQuestion());
+        String playerAnswer = scanner.nextLine();
+        return playerAnswer.equals(question.getAnswer());
     }
 
     public static void main(String[] args) {
-        final Dungeon dungeon = new CmdDungeon(new Random(0));
-        while (dungeon.getCurrentRoom() != null) {
-            dungeon.enterNextRoom();
+        final Random random = new Random(0);
+        final Dungeon dungeon = new Dungeon(random, new TaskFactory(random));
+        final Player player = new CmdPlayer(dungeon.getStartRoom());
+        while (player.getCurrentRoom() != null) {
+            player.enterNextRoom();
         }
     }
 }
