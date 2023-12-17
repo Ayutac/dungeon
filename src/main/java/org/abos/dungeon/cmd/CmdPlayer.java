@@ -92,7 +92,8 @@ public class CmdPlayer extends Player {
         while (player.getCurrentRoom() != null) {
             player.enterNextRoom();
         }
+        final int tc = player.getClearedTaskCount();
         final int hc = player.getHamsterCount();
-        System.out.printf("%d task cleared, %d hamster%s collected, highest room: %d%n", player.getClearedTaskCount(), hc, hc == 1 ? "" : "s", player.getHighestRoomNumber());
+        System.out.printf("%d task%s cleared, %d hamster%s collected, highest room: %d%n", tc, tc == 1 ? "" : "s", hc, hc == 1 ? "" : "s", player.getHighestRoomNumber());
     }
 }
