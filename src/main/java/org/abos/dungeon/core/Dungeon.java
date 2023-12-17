@@ -101,6 +101,9 @@ public abstract class Dungeon {
         final Room nextRoom = selectDoor();
         final Room oldRoom = currentRoom;
         currentRoom = nextRoom;
+        if (currentRoom == null) {
+            return;
+        }
         final Task newTask = currentRoom.getTask();
         if (newTask == null) {
             return;

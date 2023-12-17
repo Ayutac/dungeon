@@ -4,7 +4,7 @@ import java.util.Random;
 import java.util.function.Function;
 
 /**
- * Factory for {@see Task}s.
+ * Factory for {@link Task}s.
  */
 public interface TaskFactory extends Function<Integer, Task> {
 
