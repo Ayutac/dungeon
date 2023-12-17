@@ -1,10 +1,18 @@
 package org.abos.dungeon.core;
 
-import java.util.*;
+import org.abos.common.Serializable;
 
-public abstract class Player {
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.util.*;
+import java.util.function.Function;
+
+public abstract class Player implements Serializable {
 
     protected Room currentRoom;
+    
+    protected Room oldRoom;
 
     protected int highestRoomNumber;
 
@@ -26,7 +34,7 @@ public abstract class Player {
     public void enterNextRoom() {
         currentRoom.fillDoors();
         final Room nextRoom = selectDoor();
-        final Room oldRoom = currentRoom;
+        oldRoom = currentRoom;
         currentRoom = nextRoom;
         if (currentRoom == null) {
             return;
@@ -87,4 +95,39 @@ public abstract class Player {
     public int getHamsterCount() {
         return collectedHamsters.size();
     }
+
+    @Override
+    public void writeObject(final DataOutputStream dos) throws IOException {
+        dos.writeInt(oldRoom.getId());
+        dos.writeInt(highestRoomNumber);
+        dos.writeInt(clearedTasks.size());
+        for (Integer clearedTask : clearedTasks) {
+            dos.writeInt(clearedTask);
+        }
+        dos.writeInt(collectedHamsters.size());
+        for (Integer hamster : collectedHamsters) {
+            dos.writeInt(hamster);
+        }
+    }
+    
+    public static Player readObject(final DataInputStream dis, final Dungeon dungeon, final Function<Room, Player> constructor) throws IOException {
+        final int currentRoom = dis.readInt();
+        final int highestRoomNumber = dis.readInt();
+        final int taskCount = dis.readInt();
+        final Set<Integer> clearedTasks = new HashSet<>();
+        for (int i = 0; i < taskCount; i++) {
+            clearedTasks.add(dis.readInt());
+        }
+        final int hamsterCount = dis.readInt();
+        final Set<Integer> hamsters = new HashSet<>();
+        for (int i = 0; i < hamsterCount; i++) {
+            hamsters.add(dis.readInt());
+        }
+        final Player result = constructor.apply(dungeon.getRoom(currentRoom));
+        result.highestRoomNumber = highestRoomNumber;
+        result.clearedTasks.addAll(clearedTasks);
+        result.collectedHamsters.addAll(hamsters);
+        return result;
+    }
+    
 }

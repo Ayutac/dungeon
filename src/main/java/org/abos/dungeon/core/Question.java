@@ -3,6 +3,9 @@ package org.abos.dungeon.core;
 import org.abos.common.CollectionUtil;
 import org.abos.common.MathUtil;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -44,6 +47,16 @@ public class Question implements Task {
         if (player.displayQuestion(this)) {
             player.clearCurrentTask();
         }
+    }
+    
+    @Override
+    public void writeObject(final DataOutputStream dos) throws IOException {
+        dos.writeUTF(question);
+        dos.writeUTF(answer);
+    }
+    
+    public static Question readObject(final DataInputStream dis) throws IOException {
+        return new Question(dis.readUTF(), dis.readUTF());
     }
 
     protected static int getSummandUpperLimit(final int roomNumber) {

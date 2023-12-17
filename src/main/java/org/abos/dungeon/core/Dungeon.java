@@ -1,15 +1,21 @@
 package org.abos.dungeon.core;
 
+import org.abos.common.Serializable;
+
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Random;
 
-public class Dungeon {
+public class Dungeon implements Serializable {
 
     protected final Room exitRoom = new Room(true, Room.EXIT_ID, this, null);
 
-    protected final Room startRoom;
+    protected Room startRoom;
 
     protected final List<Room> rooms = new ArrayList<>();
 
@@ -17,10 +23,16 @@ public class Dungeon {
 
     protected TaskFactory taskFactory;
 
-    public Dungeon(final Random random, final TaskFactory taskFactory) {
+    private Dungeon(final Random random, final TaskFactory taskFactory, final boolean generateStartRoom) {
         this.random = Objects.requireNonNull(random);
         this.taskFactory = Objects.requireNonNull(taskFactory);
-        startRoom = generateRoom(exitRoom);
+        if (generateStartRoom) {
+            startRoom = generateRoom(exitRoom);
+        }
+    }
+    
+    public Dungeon(final Random random, final TaskFactory taskFactory) {
+        this(random, taskFactory, true);
     }
 
     public Random random() {
@@ -33,6 +45,10 @@ public class Dungeon {
 
     public Room getStartRoom() {
         return startRoom;
+    }
+    
+    public Room getRoom(int index) {
+        return rooms.get(index);
     }
 
     /**
@@ -61,7 +77,7 @@ public class Dungeon {
         if (rooms.size() == Integer.MAX_VALUE) {
             return null;
         }
-        final Room generated = new Room(rooms.size(), this, Objects.requireNonNull(from));
+        final Room generated = new Room(rooms.size(), this, from.getId());
         rooms.add(generated);
         return generated;
     }
@@ -88,5 +104,25 @@ public class Dungeon {
     
     public double chanceOfHamsterInRoom() {
         return 0.1d;
+    }
+
+    @Override
+    public void writeObject(final DataOutputStream dos) throws IOException {
+        dos.writeInt(rooms.size());
+        for (Room room : rooms) {
+            room.writeObject(dos);
+        }
+    }
+    
+    public static Dungeon readObject(final DataInputStream dis, final Random random, final TaskFactory taskFactory) throws IOException {
+        final int roomCount = dis.readInt();
+        final List<Room> rooms = new LinkedList<>();
+        final Dungeon result = new Dungeon(random, taskFactory, false);
+        for (int i = 0; i < roomCount; i++) {
+            rooms.add(Room.readObject(dis, result));
+        }
+        result.startRoom = rooms.get(0);
+        result.rooms.addAll(rooms);
+        return result;
     }
 }

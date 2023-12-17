@@ -2,6 +2,11 @@ package org.abos.dungeon.cmd;
 
 import org.abos.dungeon.core.*;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.Random;
 import java.util.Scanner;
 
@@ -85,12 +90,21 @@ public class CmdPlayer extends Player {
         scanner.nextLine();
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
+        final String saveFilePath = "game.sav";
         final Random random = new Random(0);
-        final Dungeon dungeon = new Dungeon(random, new TaskFactory(random));
-        final Player player = new CmdPlayer(dungeon.getStartRoom());
+        final Dungeon dungeon;
+        final Player player;
+        try (final DataInputStream dis = new DataInputStream(new FileInputStream(saveFilePath))) {
+            dungeon = Dungeon.readObject(dis, random, new TaskFactory(random));
+            player = Player.readObject(dis, dungeon, CmdPlayer::new);
+        }
         while (player.getCurrentRoom() != null) {
             player.enterNextRoom();
+            try (final DataOutputStream dos = new DataOutputStream(new FileOutputStream(saveFilePath))) {
+                dungeon.writeObject(dos);
+                player.writeObject(dos);
+            }
         }
         final int tc = player.getClearedTaskCount();
         final int hc = player.getHamsterCount();

@@ -1,5 +1,7 @@
 package org.abos.dungeon.core;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -38,6 +40,15 @@ public class Information implements Task {
     public void accept(final Player player) {
         player.displayInformation(this);
         player.clearCurrentTask();
+    }
+
+    @Override
+    public void writeObject(final DataOutputStream dos) throws IOException {
+        dos.writeUTF(text);
+    }
+
+    public static Information readObject(final DataInputStream dis) throws IOException {
+        return new Information(dis.readUTF());
     }
     
     public static Information getRandomInformation(final Random random) {
