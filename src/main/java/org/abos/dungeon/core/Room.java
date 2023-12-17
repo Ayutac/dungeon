@@ -14,6 +14,8 @@ public class Room {
 
     public static final int EXIT_ID = -1;
 
+    public static final int START_ID = 0;
+
     protected final int id;
 
     protected final int doorCount;
@@ -23,6 +25,8 @@ public class Room {
     private final Room from;
 
     protected final List<Room> doors = new LinkedList<>();
+
+    protected final Task task;
 
     /* package private */ Room(final boolean exit, final int id, Dungeon dungeon, final Room from) {
         if (!exit && id < 0) {
@@ -36,9 +40,16 @@ public class Room {
         this.from = from;
         if (exit) {
             doorCount = MIN_DOORS;
+            task = null;
         }
         else {
             doorCount = dungeon.random().nextInt(MIN_DOORS, MAX_DOORS + 1);
+            if (id == START_ID) {
+                task = null;
+            }
+            else {
+                task = dungeon.getTaskFactory().apply(id);
+            }
         }
     }
 
@@ -85,5 +96,9 @@ public class Room {
 
     public Room getRoomBehindDoor(final int index) {
         return doors.get(index);
+    }
+
+    public Task getTask() {
+        return task;
     }
 }

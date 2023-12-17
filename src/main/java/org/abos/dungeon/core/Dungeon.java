@@ -7,7 +7,9 @@ import java.util.Random;
 
 public abstract class Dungeon {
 
-    public final Room exit = new Room(true, Room.EXIT_ID, this, null);
+    protected final Room exit = new Room(true, Room.EXIT_ID, this, null);
+
+    protected final Room start;
 
     protected final List<Room> rooms = new ArrayList<>();
 
@@ -15,13 +17,17 @@ public abstract class Dungeon {
 
     protected Room currentRoom;
 
-    public Dungeon(final Random random) {
+    protected TaskFactory taskFactory;
+
+    public Dungeon(final Random random, final TaskFactory taskFactory) {
         this.random = Objects.requireNonNull(random);
-        currentRoom = generateRoom(exit);
+        this.taskFactory = Objects.requireNonNull(taskFactory);
+        start = generateRoom(exit);
+        currentRoom = start;
     }
 
-    public Dungeon() {
-        this(new Random());
+    public Dungeon(final TaskFactory taskFactory) {
+        this(new Random(), taskFactory);
     }
 
     public Room getCurrentRoom() {
@@ -30,6 +36,10 @@ public abstract class Dungeon {
 
     public Random random() {
         return random;
+    }
+
+    public TaskFactory getTaskFactory() {
+        return taskFactory;
     }
 
     /**
@@ -89,7 +99,18 @@ public abstract class Dungeon {
     public void enterNextRoom() {
         currentRoom.fillDoors();
         final Room nextRoom = selectDoor();
+        final Room oldRoom = currentRoom;
         currentRoom = nextRoom;
+        final Task newTask = currentRoom.getTask();
+        if (newTask == null) {
+            return;
+        }
+        if (!newTask.isSolved()) {
+            newTask.run();
+            if (!newTask.isSolved()) {
+                currentRoom = oldRoom;
+            }
+        }
     }
 
     /**

@@ -2,6 +2,7 @@ package org.abos.dungeon.cmd;
 
 import org.abos.dungeon.core.Dungeon;
 import org.abos.dungeon.core.Room;
+import org.abos.dungeon.core.TaskFactory;
 
 import java.util.Random;
 import java.util.Scanner;
@@ -9,11 +10,11 @@ import java.util.Scanner;
 public class CmdDungeon extends Dungeon {
 
     public CmdDungeon(final Random random) {
-        super(random);
+        super(random, new CmdTaskFactory(random));
     }
 
     public CmdDungeon() {
-        super();
+        this(new Random());
     }
 
     @Override
@@ -68,6 +69,11 @@ public class CmdDungeon extends Dungeon {
                 return false;
             }
         }
+    }
+
+    @Override
+    public TaskFactory getTaskFactory() {
+        return taskFactory;
     }
 
     public static void main(String[] args) {
