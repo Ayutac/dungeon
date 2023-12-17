@@ -68,5 +68,7 @@ public abstract class Player {
         return clearedTasks.size();
     }
 
+    protected abstract void displayInformation(final Information information);
+
     protected abstract boolean displayQuestion(final Question question);
 }

@@ -7,13 +7,14 @@ import java.util.Scanner;
 
 public class CmdPlayer extends Player {
 
+    final Scanner scanner = new Scanner(System.in);
+
     public CmdPlayer(Room startRoom) {
         super(startRoom);
     }
 
     @Override
     protected Room selectDoor() {
-        final Scanner scanner = new Scanner(System.in);
         String selectionString;
         int selection;
         Room selectedRoom;
@@ -22,7 +23,7 @@ public class CmdPlayer extends Player {
             selectionString = scanner.nextLine();
             selectionString = selectionString.toLowerCase();
             if (selectionString.equals("no") || selectionString.equals("exit") || selectionString.equals("quit")) {
-                if (leaveDungeon(scanner)) {
+                if (leaveDungeon()) {
                     return null;
                 }
                 continue;
@@ -30,7 +31,7 @@ public class CmdPlayer extends Player {
             try {
                 selection = Integer.parseInt(selectionString);
                 if (selection == -1) {
-                    if (leaveDungeon(scanner)) {
+                    if (leaveDungeon()) {
                         return null;
                     }
                     continue;
@@ -40,7 +41,7 @@ public class CmdPlayer extends Player {
                 }
                 selectedRoom = currentRoom.getRoomBehindDoor(selection);
                 if (selectedRoom.isExit()) {
-                    if (leaveDungeon(scanner)) {
+                    if (leaveDungeon()) {
                         return null;
                     }
                     continue;
@@ -51,7 +52,7 @@ public class CmdPlayer extends Player {
         }
     }
 
-    protected boolean leaveDungeon(final Scanner scanner) {
+    protected boolean leaveDungeon() {
         String answer;
         System.out.print("Really leave the dungeon? (Y/N) ");
         while (true) {
@@ -66,8 +67,13 @@ public class CmdPlayer extends Player {
     }
 
     @Override
+    protected void displayInformation(Information information) {
+        System.out.print(information.getText());
+        scanner.nextLine();
+    }
+
+    @Override
     protected boolean displayQuestion(final Question question) {
-        final Scanner scanner = new Scanner(System.in);
         System.out.print(question.getQuestion());
         String playerAnswer = scanner.nextLine();
         return playerAnswer.equals(question.getAnswer());
