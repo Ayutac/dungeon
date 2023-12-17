@@ -2,22 +2,29 @@ package org.abos.dungeon.gui.fx;
 
 import javafx.application.Application;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
+import org.abos.dungeon.core.Dungeon;
+import org.abos.dungeon.core.TaskFactory;
+
+import java.util.Random;
 
 public class FxMenu extends Application {
     @Override
     public void start(Stage stage) {
-        String javaVersion = System.getProperty("java.version");
-        String javafxVersion = System.getProperty("javafx.version");
-        Label l = new Label("Hello, JavaFX " + javafxVersion + ", running on Java " + javaVersion + ".");
-        Scene scene = new Scene(new StackPane(l), 640, 480);
+        final StackPane sp = new StackPane();
+        final Scene scene = new Scene(sp, 640, 480);
         stage.setScene(scene);
         stage.show();
+        final Random random = new Random(0);
+        final Dungeon dungeon = new Dungeon(random, new TaskFactory(random));
+        final FxPlayer player = new FxPlayer(dungeon.getStartRoom());
+        while (player.getCurrentRoom() != null) {
+            player.enterNextRoom();
+        }
     }
 
     public static void main(String[] args) {
-        launch();
+        Application.launch();
     }
 }

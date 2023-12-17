@@ -94,7 +94,7 @@ public class Question implements Task {
             }
             catch (ArithmeticException ex) {/* Ignore and retry. */}
         }
-        return new Question(String.format("What is %d + %d? ", a, b), Integer.toString(a+b));
+        return new Question(String.format("What is %d + %d?", a, b), Integer.toString(a+b));
     }
 
     public static Question getSubtractionQuestion(final Random random, final int roomNumber) {
@@ -112,7 +112,7 @@ public class Question implements Task {
             }
             catch (ArithmeticException ex) {/* Ignore and retry. */}
         }
-        return new Question(String.format("What is %d - %d? ", a, b), Integer.toString(a-b));
+        return new Question(String.format("What is %d - %d?", a, b), Integer.toString(a-b));
     }
 
     public static Question getMultiplicationQuestion(final Random random, final int roomNumber) {
@@ -130,7 +130,7 @@ public class Question implements Task {
             }
             catch (ArithmeticException ex) {/* Ignore and retry. */}
         }
-        return new Question(String.format("What is %d * %d? ", a, b), Integer.toString(a*b));
+        return new Question(String.format("What is %d * %d?", a, b), Integer.toString(a*b));
     }
 
     public static Question getDivisionQuestion(final Random random, final int roomNumber) {
@@ -151,7 +151,7 @@ public class Question implements Task {
             }
             catch (ArithmeticException ex) {/* Ignore and retry. */}
         }
-        return new Question(String.format("What is %d / %d? ", a*b, b), Integer.toString(a));
+        return new Question(String.format("What is %d / %d?", a*b, b), Integer.toString(a));
     }
 
     public static Question getSimpleArithmQuestion(final Random random, final int roomNumber) {
@@ -175,7 +175,7 @@ public class Question implements Task {
             }
             catch (ArithmeticException ex) {/* Ignore and retry. */}
         }
-        return new Question(String.format("What is %d²? ", a), Integer.toString(a*a));
+        return new Question(String.format("What is %d²?", a), Integer.toString(a*a));
     }
 
     public static Question getSquareRootQuestion(final Random random, final int roomNumber) {
@@ -189,12 +189,12 @@ public class Question implements Task {
             }
             catch (ArithmeticException ex) {/* Ignore and retry. */}
         }
-        return new Question(String.format("What is √%d? ", a*a), Integer.toString(a));
+        return new Question(String.format("What is √%d?", a*a), Integer.toString(a));
     }
 
     public static Question getFactorialQuestion(final Random random, final int roomNumber) {
         final int a = random.nextInt(getFactorialUpperLimit(roomNumber));
-        return new Question(String.format("What is %d!? ", a), Integer.toString(MathUtil.factorial(a)));
+        return new Question(String.format("What is %d!?", a), Integer.toString(MathUtil.factorial(a)));
     }
 
     public static Question getDigitQuestion(final Random random, final int roomNumber) {
@@ -202,7 +202,7 @@ public class Question implements Task {
         final Map.Entry<String, Double> constant = CollectionUtil.getRandomEntry(CONSTANTS, random);
         final int factor = (int)Math.round(Math.pow(10, position-1));
         final int digit = (int)Math.floor(constant.getValue()*factor) % 10;
-        return new Question(String.format("What is the %d. digit of %s? ", position, constant.getKey()), Integer.toString(digit));
+        return new Question(String.format("What is the %d. digit of %s?", position, constant.getKey()), Integer.toString(digit));
     }
 
 }

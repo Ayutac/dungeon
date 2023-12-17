@@ -9,6 +9,8 @@ import java.util.*;
 import java.util.function.Function;
 
 public abstract class Player implements Serializable {
+    
+    protected static final String HAMSTER_ACQUISITION_MSG = "You pick up a hamster you found in the room. Hello little friend!";
 
     protected Room currentRoom;
     

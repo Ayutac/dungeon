@@ -11,6 +11,8 @@ import java.util.Random;
 import java.util.Scanner;
 
 public class CmdPlayer extends Player {
+    
+    protected static final String HAMSTER_ACQUISITION_MSG = Player.HAMSTER_ACQUISITION_MSG + " ";
 
     final Scanner scanner = new Scanner(System.in);
 
@@ -74,19 +76,21 @@ public class CmdPlayer extends Player {
     @Override
     protected void displayInformation(Information information) {
         System.out.print(information.getText());
+        System.out.print(' ');
         scanner.nextLine();
     }
 
     @Override
     protected boolean displayQuestion(final Question question) {
         System.out.print(question.getQuestion());
+        System.out.print(' ');
         String playerAnswer = scanner.nextLine();
         return playerAnswer.equals(question.getAnswer());
     }
 
     @Override
     protected void displayHamsterAcquisition() {
-        System.out.print("You pick up a hamster you found in the room. Hello little friend! ");
+        System.out.print(CmdPlayer.HAMSTER_ACQUISITION_MSG);
         scanner.nextLine();
     }
 
