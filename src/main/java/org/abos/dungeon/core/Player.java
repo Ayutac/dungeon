@@ -35,7 +35,10 @@ public abstract class Player {
         }
         if (!hasClearedTask(currentRoom.getId())) {
             newTask.accept(this);
-            if (!hasClearedTask(currentRoom.getId())) {
+            if (hasClearedTask(currentRoom.getId())) {
+                highestRoomNumber = Math.max(highestRoomNumber, currentRoom.getId());
+            }
+            else {
                 currentRoom = oldRoom;
             }
         }
@@ -45,7 +48,7 @@ public abstract class Player {
      * Let the player select the door of the current room to go through.
      * The rooms behind the doors are guaranteed to be generated
      * when this method is called.
-     * @return the next room for the player
+     * @return the next room for the player; {@code null} means dungeon is to be exited
      */
     protected abstract Room selectDoor();
 
@@ -59,6 +62,10 @@ public abstract class Player {
 
     public void clearCurrentTask() {
         clearedTasks.add(currentRoom.getId());
+    }
+
+    public int getClearedTaskCount() {
+        return clearedTasks.size();
     }
 
     protected abstract boolean displayQuestion(final Question question);

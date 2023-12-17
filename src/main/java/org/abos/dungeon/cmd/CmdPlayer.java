@@ -80,5 +80,6 @@ public class CmdPlayer extends Player {
         while (player.getCurrentRoom() != null) {
             player.enterNextRoom();
         }
+        System.out.printf("%d task cleared, highest room: %d%n", player.getClearedTaskCount(), player.getHighestRoomNumber());
     }
 }
