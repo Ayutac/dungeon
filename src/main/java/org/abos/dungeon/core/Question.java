@@ -2,7 +2,6 @@ package org.abos.dungeon.core;
 
 import org.abos.common.CollectionUtil;
 import org.abos.common.MathUtil;
-import org.abos.dungeon.cmd.CmdQuestion;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -71,6 +70,7 @@ public abstract class Question extends Task {
             }
             b = random.nextInt(getSummandUpperLimit(roomNumber));
             try {
+                //noinspection ResultOfMethodCallIgnored
                 Math.addExact(a, b);
                 break;
             }
@@ -88,6 +88,7 @@ public abstract class Question extends Task {
             }
             b = random.nextInt(getSummandUpperLimit(roomNumber));
             try {
+                //noinspection ResultOfMethodCallIgnored
                 Math.subtractExact(a, b);
                 break;
             }
@@ -105,6 +106,7 @@ public abstract class Question extends Task {
             }
             b = random.nextInt(getFactorUpperLimit(roomNumber));
             try {
+                //noinspection ResultOfMethodCallIgnored
                 Math.multiplyExact(a, b);
                 break;
             }
@@ -125,6 +127,7 @@ public abstract class Question extends Task {
                 b = 1;
             }
             try {
+                //noinspection ResultOfMethodCallIgnored
                 Math.multiplyExact(a, b);
                 break;
             }
@@ -135,19 +138,20 @@ public abstract class Question extends Task {
 
     public static Question getSimpleArithmQuestion(final BiFunction<String, String, Question> constructor, final Random random, final int roomNumber) {
         return switch (random.nextInt(4)) {
-            case 0 -> getAdditionQuestion(CmdQuestion::new, random, roomNumber);
-            case 1 -> getSubtractionQuestion(CmdQuestion::new, random, roomNumber);
-            case 2 -> getMultiplicationQuestion(CmdQuestion::new, random, roomNumber);
-            case 3 -> getDivisionQuestion(CmdQuestion::new, random, roomNumber);
+            case 0 -> getAdditionQuestion(constructor, random, roomNumber);
+            case 1 -> getSubtractionQuestion(constructor, random, roomNumber);
+            case 2 -> getMultiplicationQuestion(constructor, random, roomNumber);
+            case 3 -> getDivisionQuestion(constructor, random, roomNumber);
             default -> throw new AssertionError("Unreachable code reached!");
         };
-    };
+    }
 
     public static Question getSquareQuestion(final BiFunction<String, String, Question> constructor, final Random random, final int roomNumber) {
         int a;
         while (true) {
             a = random.nextInt(getFactorUpperLimit(roomNumber));
             try {
+                //noinspection ResultOfMethodCallIgnored
                 Math.multiplyExact(a, a);
                 break;
             }
@@ -161,6 +165,7 @@ public abstract class Question extends Task {
         while (true) {
             a = random.nextInt(getFactorUpperLimit(roomNumber));
             try {
+                //noinspection ResultOfMethodCallIgnored
                 Math.multiplyExact(a, a);
                 break;
             }
@@ -178,7 +183,7 @@ public abstract class Question extends Task {
         final int position = 1 + random.nextInt(getDigitUpperLimit(roomNumber));
         final Map.Entry<String, Double> constant = CollectionUtil.getRandomEntry(CONSTANTS, random);
         final int factor = (int)Math.round(Math.pow(10, position-1));
-        final int digit = (int)Math.floor(constant.getValue()*factor) / factor;
+        final int digit = (int)Math.floor(constant.getValue()*factor) % factor;
         return constructor.apply(String.format("What is the %d. digit of %s? ", position, constant.getKey()), Integer.toString(digit));
     }
 
