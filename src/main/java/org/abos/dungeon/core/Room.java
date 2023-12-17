@@ -1,5 +1,7 @@
 package org.abos.dungeon.core;
 
+import org.abos.common.MathUtil;
+
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -27,6 +29,8 @@ public class Room {
     protected final List<Room> doors = new LinkedList<>();
 
     protected final Task task;
+    
+    protected boolean hasHamster;
 
     /* package private */ Room(final boolean exit, final int id, Dungeon dungeon, final Room from) {
         if (!exit && id < 0) {
@@ -51,6 +55,10 @@ public class Room {
                 task = dungeon.getTaskFactory().apply(id);
             }
         }
+        if (MathUtil.isPrime(id)) {
+            hasHamster = dungeon.random().nextDouble() < dungeon.chanceOfHamsterInRoom();
+        }
+        // else hasHamster defaults to false
     }
 
     public Room(final int id, final Dungeon dungeon, final Room from) {
@@ -100,5 +108,13 @@ public class Room {
 
     public Task getTask() {
         return task;
+    }
+    
+    public boolean awardHamster() {
+        final boolean hadHamster = hasHamster;
+        if (hadHamster) {
+            hasHamster = false;
+        }
+        return hadHamster;
     }
 }

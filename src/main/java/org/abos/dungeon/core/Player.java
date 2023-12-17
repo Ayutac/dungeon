@@ -6,9 +6,11 @@ public abstract class Player {
 
     protected Room currentRoom;
 
-    protected final Set<Integer> clearedTasks = new HashSet<>();
-
     protected int highestRoomNumber;
+
+    protected final Set<Integer> clearedTasks = new HashSet<>();
+    
+    protected final Set<Integer> collectedHamsters = new HashSet<>();
 
     public Player(final Room startRoom) {
         currentRoom = Objects.requireNonNull(startRoom);
@@ -37,6 +39,7 @@ public abstract class Player {
             newTask.accept(this);
             if (hasClearedTask(currentRoom.getId())) {
                 highestRoomNumber = Math.max(highestRoomNumber, currentRoom.getId());
+                collectHamster();
             }
             else {
                 currentRoom = oldRoom;
@@ -71,4 +74,17 @@ public abstract class Player {
     protected abstract void displayInformation(final Information information);
 
     protected abstract boolean displayQuestion(final Question question);
+    
+    public void collectHamster() {
+        if (currentRoom.awardHamster()) {
+            collectedHamsters.add(currentRoom.getId());
+            displayHamsterAcquisition();
+        }
+    }
+    
+    protected abstract void displayHamsterAcquisition();
+    
+    public int getHamsterCount() {
+        return collectedHamsters.size();
+    }
 }

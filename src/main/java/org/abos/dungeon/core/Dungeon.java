@@ -71,7 +71,7 @@ public class Dungeon {
      * @return the chance a door moves the player back to an existing room
      */
     protected double chanceRoomGoesBack() {
-        return 1d / Math.E;
+        return 1d / Math.E; // about 0.368d
     }
 
     /**
@@ -84,5 +84,9 @@ public class Dungeon {
             return getRandomGeneratedRoom(from);
         }
         return generateRoom(from);
+    }
+    
+    public double chanceOfHamsterInRoom() {
+        return 0.1d;
     }
 }

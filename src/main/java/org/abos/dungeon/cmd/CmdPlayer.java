@@ -79,6 +79,12 @@ public class CmdPlayer extends Player {
         return playerAnswer.equals(question.getAnswer());
     }
 
+    @Override
+    protected void displayHamsterAcquisition() {
+        System.out.print("You pick up a hamster you found in the room. Hello little friend! ");
+        scanner.nextLine();
+    }
+
     public static void main(String[] args) {
         final Random random = new Random(0);
         final Dungeon dungeon = new Dungeon(random, new TaskFactory(random));
@@ -86,6 +92,7 @@ public class CmdPlayer extends Player {
         while (player.getCurrentRoom() != null) {
             player.enterNextRoom();
         }
-        System.out.printf("%d task cleared, highest room: %d%n", player.getClearedTaskCount(), player.getHighestRoomNumber());
+        final int hc = player.getHamsterCount();
+        System.out.printf("%d task cleared, %d hamster%s collected, highest room: %d%n", player.getClearedTaskCount(), hc, hc == 1 ? "" : "s", player.getHighestRoomNumber());
     }
 }
