@@ -21,6 +21,8 @@ public class Room implements Serializable {
     public static final int EXIT_ID = -1;
 
     public static final int START_ID = 0;
+    
+    public static final int RETURN_ID = 0;
 
     protected final int id;
 
@@ -169,7 +171,7 @@ public class Room implements Serializable {
             for (int i = 0; i < doorCount; i++) {
                 doors.add(dis.readInt());
             }
-            fromId = doors.get(0);
+            fromId = doors.get(RETURN_ID);
         }
         final boolean hasHamster = dis.readBoolean();
         final boolean hasTask = dis.readBoolean();

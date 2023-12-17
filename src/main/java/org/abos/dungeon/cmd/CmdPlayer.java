@@ -24,7 +24,6 @@ public class CmdPlayer extends Player {
     protected Room selectDoor() {
         String selectionString;
         int selection;
-        Room selectedRoom;
         while (true) {
             System.out.printf("You are in room %d. Select one door between 0 and %d: ", currentRoom.getId(), currentRoom.getDoorCount()-1);
             selectionString = scanner.nextLine();
@@ -46,8 +45,7 @@ public class CmdPlayer extends Player {
                 if (selection >= currentRoom.getDoorCount() || selection < 0) {
                     continue;
                 }
-                selectedRoom = currentRoom.getRoomBehindDoor(selection);
-                if (selectedRoom.isExit()) {
+                if (selection == Room.RETURN_ID && currentRoom.getId() == Room.START_ID) {
                     if (leaveDungeon()) {
                         return null;
                     }

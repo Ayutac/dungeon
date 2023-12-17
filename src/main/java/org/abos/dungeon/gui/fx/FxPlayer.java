@@ -22,11 +22,10 @@ public class FxPlayer extends Player {
         while (selection.isEmpty()) {
             selection = doorSelector.showAndWait();
         }
-        final Room selectedRoom = currentRoom.getRoomBehindDoor(selection.get());
-        if (selectedRoom.isExit()) {
+        if (selection.isEmpty() || (selection.get() == Room.RETURN_ID && currentRoom.getId() == Room.START_ID)) {
             return null;
         }
-        return selectedRoom;
+        return currentRoom.getRoomBehindDoor(selection.get());
     }
 
     @Override
