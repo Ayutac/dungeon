@@ -1,14 +1,23 @@
 package org.abos.dungeon.core;
 
 import org.abos.common.CollectionUtil;
+import org.abos.common.Serializable;
+import org.abos.dungeon.core.item.Item;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-public class Inventory {
+public class Inventory implements Serializable {
+
+    public static final int DEFAULT_INVENTORY_CAPACITY = 10;
+
+    public static final int DEFAULT_STACK_CAPACITY = 10;
 
     protected final Map<Item, List<Integer>> items = new HashMap<>();
 
@@ -126,6 +135,48 @@ public class Inventory {
             modifiableView.put(entry.getKey(), Collections.unmodifiableList(entry.getValue()));
         }
         return Collections.unmodifiableList(CollectionUtil.getAlphabeticalOrder(modifiableView));
+    }
+
+    @Override
+    public void writeObject(DataOutputStream dos) throws IOException {
+        dos.writeInt(inventoryCapacity);
+        dos.writeInt(stackCapacity);
+        dos.writeInt(items.size());
+        for (var entry : items.entrySet()) {
+            dos.writeUTF(entry.getKey().getName());
+            dos.writeInt(entry.getValue().size());
+            for (Integer stack : entry.getValue()) {
+                dos.writeInt(stack);
+            }
+        }
+    }
+
+    /**
+     * Reads an {@link Inventory} instance from the specified stream.
+     * @param dis the {@link DataInputStream} to read from
+     * @return a new {@link Inventory} instance
+     * @throws IllegalStateException If an unknown item name is encountered.
+     * @throws IOException If an I/O exception occurs.
+     */
+    public static Inventory readObject(DataInputStream dis) throws IllegalStateException, IOException {
+        final int inventoryCapacity = dis.readInt();
+        final int stackCapacity = dis.readInt();
+        final Inventory result = new Inventory(inventoryCapacity, stackCapacity);
+        final int size = dis.readInt();
+        for (int i = 0; i < size; i++) {
+            final String name = dis.readUTF();
+            final Item item = CollectionUtil.getByName(Item.itemRegistry, name);
+            if (item == null) {
+                throw new IllegalStateException("Unknown item " + name + " encountered!");
+            }
+            final List<Integer> stacks = new LinkedList<>();
+            final int stackCount = dis.readInt();
+            for (int j = 0; j < stackCount; j++) {
+                stacks.add(dis.readInt());
+            }
+            result.items.put(item, stacks);
+        }
+        return result;
     }
 
 }

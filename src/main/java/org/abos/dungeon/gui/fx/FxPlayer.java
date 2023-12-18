@@ -3,6 +3,7 @@ package org.abos.dungeon.gui.fx;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import org.abos.dungeon.core.Information;
+import org.abos.dungeon.core.Inventory;
 import org.abos.dungeon.core.Player;
 import org.abos.dungeon.core.Question;
 import org.abos.dungeon.core.Room;
@@ -11,8 +12,8 @@ import java.util.Optional;
 
 public class FxPlayer extends Player {
     
-    public FxPlayer(Room startRoom) {
-        super(startRoom);
+    public FxPlayer(final Room startRoom, final Inventory inventory) {
+        super(startRoom, inventory);
     }
 
     @Override
@@ -22,7 +23,7 @@ public class FxPlayer extends Player {
         while (selection.isEmpty()) {
             selection = doorSelector.showAndWait();
         }
-        if (selection.isEmpty() || (selection.get() == Room.RETURN_ID && currentRoom.getId() == Room.START_ID)) {
+        if (selection.get() == Room.RETURN_ID && currentRoom.getId() == Room.START_ID) {
             return null;
         }
         return currentRoom.getRoomBehindDoor(selection.get());

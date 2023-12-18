@@ -6,7 +6,7 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.*;
-import java.util.function.Function;
+import java.util.function.BiFunction;
 
 /**
  * The player roaming through {@link Room Rooms} in a {@link Dungeon}.
@@ -43,14 +43,18 @@ public abstract class Player implements Serializable {
      */
     protected final Set<Integer> collectedHamsters = new HashSet<>();
 
+    protected final Inventory inventory;
+
     /**
      * Creates a new {@link Player} instance.
      * @param startRoom The room the player starts in. Can be different from {@link Dungeon#getStartRoom()},
      *                  but shouldn't be the exit room. Not {@code null}.
-     * @throws NullPointerException If {@code startRoom} refers to {@code null}.
+     * @param inventory the player's inventory, not {@code null}
+     * @throws NullPointerException If {@code startRoom} or {@code inventory} refers to {@code null}.
      */
-    public Player(final Room startRoom) {
+    public Player(final Room startRoom, final Inventory inventory) {
         currentRoom = Objects.requireNonNull(startRoom);
+        this.inventory = Objects.requireNonNull(inventory);
     }
 
     /**
@@ -178,6 +182,7 @@ public abstract class Player implements Serializable {
         for (Integer hamster : collectedHamsters) {
             dos.writeInt(hamster);
         }
+        inventory.writeObject(dos);
     }
 
     /**
@@ -188,7 +193,7 @@ public abstract class Player implements Serializable {
      * @return a new {@link Player} instance
      * @throws IOException If an I/O exception occurs.
      */
-    public static Player readObject(final DataInputStream dis, final Dungeon dungeon, final Function<Room, Player> constructor) throws IOException {
+    public static Player readObject(final DataInputStream dis, final Dungeon dungeon, final BiFunction<Room, Inventory, Player> constructor) throws IOException {
         final int currentRoom = dis.readInt();
         final int highestRoomNumber = dis.readInt();
         final int taskCount = dis.readInt();
@@ -201,7 +206,8 @@ public abstract class Player implements Serializable {
         for (int i = 0; i < hamsterCount; i++) {
             hamsters.add(dis.readInt());
         }
-        final Player result = constructor.apply(dungeon.getRoom(currentRoom));
+        final Inventory inventory = Inventory.readObject(dis);
+        final Player result = constructor.apply(dungeon.getRoom(currentRoom), inventory);
         result.highestRoomNumber = highestRoomNumber;
         result.clearedTasks.addAll(clearedTasks);
         result.collectedHamsters.addAll(hamsters);

@@ -16,8 +16,8 @@ public class CmdPlayer extends Player {
 
     final Scanner scanner = new Scanner(System.in);
 
-    public CmdPlayer(Room startRoom) {
-        super(startRoom);
+    public CmdPlayer(final Room startRoom, final Inventory inventory) {
+        super(startRoom, inventory);
     }
 
     @Override
@@ -100,6 +100,8 @@ public class CmdPlayer extends Player {
         try (final DataInputStream dis = new DataInputStream(new FileInputStream(saveFilePath))) {
             dungeon = Dungeon.readObject(dis, random, new TaskFactory(random));
             player = Player.readObject(dis, dungeon, CmdPlayer::new);
+//            dungeon = new Dungeon(random, new TaskFactory(random));
+//            player = new CmdPlayer(dungeon.getStartRoom(), new Inventory(Inventory.DEFAULT_INVENTORY_CAPACITY, Inventory.DEFAULT_STACK_CAPACITY));
         }
         while (player.getCurrentRoom() != null) {
             player.enterNextRoom();

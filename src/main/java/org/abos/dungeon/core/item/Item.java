@@ -1,8 +1,13 @@
-package org.abos.dungeon.core;
+package org.abos.dungeon.core.item;
 
-import org.abos.common.Named;
+import org.abos.common.Describable;
 
-public interface Item extends Named {
+import java.util.HashSet;
+import java.util.Set;
+
+public interface Item extends Describable {
+
+    Set<Item> itemRegistry = new HashSet<>();
 
     /**
      * Returns true if and only if the other object is the same item as this one.

@@ -23,7 +23,7 @@ public final class CollectionUtil {
      * @throws IllegalArgumentException If the map is empty.
      * @implNote This method is not very efficient as it converts all entries to a list and randomly selects from that list.
      */
-    public static <K, V> Map.Entry<K, V> getRandomEntry(Map<K, V> map, Random random) {
+    public static <K, V> Map.Entry<K, V> getRandomEntry(final Map<K, V> map, final Random random) {
         if (map.isEmpty()) { // throws NPE
             throw new IllegalArgumentException("Map cannot be empty!");
         }
@@ -41,9 +41,21 @@ public final class CollectionUtil {
      * @return a list of the map entries sorted alphabetically by their key
      * @throws NullPointerException If {@code map} refers to {@code null}.
      */
-    public static <K extends Named, V> List<Map.Entry<K, V>> getAlphabeticalOrder(Map<K, V> map) {
+    public static <K extends Named, V> List<Map.Entry<K, V>> getAlphabeticalOrder(final Map<K, V> map) {
         final List<Map.Entry<K, V>> result = new ArrayList<>(map.entrySet());
         result.sort(Comparator.comparing(entry -> entry.getKey().getName()));
         return result;
+    }
+
+    public static <T extends Named> T getByName(final Iterable<T> iterable, final String name) {
+        if (name == null) {
+            return null;
+        }
+        for (T entry : iterable) {
+            if (name.equals(entry.getName())) {
+                return entry;
+            }
+        }
+        return null;
     }
 }
