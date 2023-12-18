@@ -2,6 +2,9 @@ package org.abos.common;
 
 import java.util.*;
 
+/**
+ * Additional utilities where {@link Collections} isn't enough.
+ */
 public final class CollectionUtil {
 
     private CollectionUtil() {

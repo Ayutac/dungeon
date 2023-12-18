@@ -3,6 +3,9 @@ package org.abos.common;
 import java.util.Deque;
 import java.util.LinkedList;
 
+/**
+ * Additional utilities where {@link Math} isn't enough.
+ */
 public final class MathUtil {
     
     private static final Deque<Integer> CACHED_PRIMES = new LinkedList<>();
@@ -51,7 +54,16 @@ public final class MathUtil {
             }
         }
     }
-    
+
+    /**
+     * Tests if the specified integer is prime. An integer is defined to be prime
+     * if it has exactly two distinct positive divisors.
+     * @param n the number to check
+     * @return {@code true} if n is prime, else {@code false}.
+     * @implNote Primes are cached, so first call of method for a given n may take
+     * significantly longer than second call with the same n. To actually
+     * test if n is prime, the Sieve of Erasthonese is used.
+     */
     public static boolean isPrime(final int n) {
         if (n < 0) {
             return isPrime(-n);

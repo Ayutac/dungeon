@@ -9,12 +9,22 @@ import java.util.function.Function;
  */
 public class TaskFactory implements Function<Integer, Task> {
 
+    /**
+     * @see #random()
+     */
     protected final Random random;
 
+    /**
+     * Creates a new {@link TaskFactory}.
+     * @param random the {@link Random} instance to use.
+     */
     public TaskFactory(final Random random) {
         this.random = Objects.requireNonNull(random);
     }
 
+    /**
+     * Returns the {@link Random} instance used by this {@link TaskFactory}
+     */
     public Random random() {
         return random;
     }

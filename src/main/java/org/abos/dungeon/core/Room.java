@@ -11,31 +11,73 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * Represents the rooms of a {@link Dungeon} a {@link Player} can be in.
+ */
 public class Room implements Serializable {
 
-    // do not change this number!
+    /**
+     * The minimal amount of doors each room can have.
+     * @see #MAX_DOORS
+     */
+    // Do NOT change this number!
     public static final int MIN_DOORS = 2;
 
+    /**
+     * The maximal amount of doors each room can have.
+     * @see #MIN_DOORS
+     */
     public static final int MAX_DOORS = 8;
 
+    /**
+     * The {@link Room#getId()} of the exit.
+     */
+    // Do NOT make this number non-negative!
     public static final int EXIT_ID = -1;
 
+    /**
+     * The {@link Room#getId()} of the start room.
+     */
     public static final int START_ID = 0;
-    
+
+    /**
+     * The door number of the return door.
+     */
     public static final int RETURN_ID = 0;
 
+    /**
+     * @see #getId() 
+     */
     protected final int id;
 
+    /**
+     * @see #getDoorCount() 
+     */
     protected final int doorCount;
 
+    /**
+     * The dungeon this room is in.
+     */
     protected final Dungeon dungeon;
 
+    /**
+     * ID of the room normally leading into this one.
+     */
     private final Integer fromId;
 
+    /**
+     * The rooms reachable from this room.
+     */
     protected final List<Integer> doors = new LinkedList<>();
 
+    /**
+     * @see #getTask() 
+     */
     protected final Task task;
-    
+
+    /**
+     * If this room currently contains a hamster or not.
+     */
     protected boolean hasHamster;
 
     /**
@@ -52,7 +94,17 @@ public class Room implements Serializable {
         this.hasHamster = hasHamster;
     }
 
+    /**
+     * Creates a new {@link Room}.
+     * @param exit if this is the exit room
+     * @param id the ID of this room
+     * @param dungeon the dungeon this room belongs to, not {@code null}
+     * @param fromId the room this room was reached from
+     */
     /* package private */ Room(final boolean exit, final int id, final Dungeon dungeon, final Integer fromId) {
+        if (exit && id != EXIT_ID) {
+            throw new IllegalArgumentException("Exit ID must be " + EXIT_ID + "!");
+        }
         if (!exit && id < 0) {
             throw new IllegalArgumentException("ID must be non-negative!");
         }
@@ -81,18 +133,27 @@ public class Room implements Serializable {
         // else hasHamster defaults to false
     }
 
+    /**
+     * Creates a new {@link Room} that is not an exit.
+     * @param id the ID of this room
+     * @param dungeon the dungeon this room belongs to, not {@code null}
+     * @param fromId the room this room was reached from, not {@code null}
+     */
     public Room(final int id, final Dungeon dungeon, final Integer fromId) {
         this(false, id, dungeon, fromId);
     }
 
+    /**
+     * The ID of this room. Unique identifier across all rooms.
+     */
     public int getId() {
         return id;
     }
 
-    public boolean isExit() {
-        return id == EXIT_ID;
-    }
-
+    /**
+     * How many other rooms are accessible from this room, including the room this room was originally accessed from.
+     * @see #fromId
+     */
     public int getDoorCount() {
         return doorCount;
     }
@@ -122,14 +183,28 @@ public class Room implements Serializable {
         doors.add(0, fromId);
     }
 
-    public Room getRoomBehindDoor(final int index) {
+    /**
+     * Returns the room behind the specified door number.
+     * @param index the door number
+     * @throws IndexOutOfBoundsException If {@code index} is invalid.
+     */
+    public Room getRoomBehindDoor(final int index) throws IndexOutOfBoundsException {
         return dungeon.getRoom(doors.get(index));
     }
 
+    /**
+     * Returns the {@link Task} the {@link Player} has to solve to fully enter this room and progress.
+     * @return the {@link Task} to be solved, can be {@code null}, meaning no task has to be completed.
+     */
     public Task getTask() {
         return task;
     }
-    
+
+    /**
+     * Gives out the hamster if this room, if one is available.
+     * This method does NOT assign it to any player, just removes it from this room.
+     * @return {@code true} if a hamster was removed from this room, else {@code false}.
+     */
     public boolean awardHamster() {
         final boolean hadHamster = hasHamster;
         if (hadHamster) {
@@ -158,7 +233,14 @@ public class Room implements Serializable {
             task.writeObject(dos);
         }
     }
-    
+
+    /**
+     * Reads an {@link Room} instance from the specified stream.
+     * @param dis the {@link DataInputStream} to read from
+     * @param dungeon the {@link Dungeon} this room shall belong to
+     * @return a new {@link Room} instance
+     * @throws IOException If an I/O exception occurs.
+     */
     public static Room readObject(final DataInputStream dis, final Dungeon dungeon) throws IOException {
         final int id = dis.readInt();
         final int doorCount = dis.readInt();

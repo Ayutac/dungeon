@@ -11,18 +11,43 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Random;
 
+/**
+ * The dungeon the {@link Player} can explore {@link Room Rooms} in.
+ */
 public class Dungeon implements Serializable {
 
+    /**
+     * The end of the dungeon.
+     */
     protected final Room exitRoom = new Room(true, Room.EXIT_ID, this, null);
 
+    /**
+     * @see #getStartRoom()
+     */
     protected Room startRoom;
 
+    /**
+     * A collection of all rooms currently existing in the dungeon.
+     */
     protected final List<Room> rooms = new ArrayList<>();
 
+    /**
+     * @see #random()
+     */
     protected Random random;
 
+    /**
+     * @see #getTaskFactory()
+     */
     protected TaskFactory taskFactory;
 
+    /**
+     * Creates a new dungeon with the specified parameters.
+     * @param random a {@link Random} instance
+     * @param taskFactory a {@link TaskFactory} instance
+     * @param generateStartRoom if the start room should be generated
+     * @throws NullPointerException If {@code random} or {@code taskFactory} refers to {@code null}.
+     */
     private Dungeon(final Random random, final TaskFactory taskFactory, final boolean generateStartRoom) {
         this.random = Objects.requireNonNull(random);
         this.taskFactory = Objects.requireNonNull(taskFactory);
@@ -30,25 +55,51 @@ public class Dungeon implements Serializable {
             startRoom = generateRoom(exitRoom);
         }
     }
-    
+
+    /**
+     * Creates a new dungeon with the specified parameters.
+     * @param random a {@link Random} instance
+     * @param taskFactory a {@link TaskFactory} instance
+     * @throws NullPointerException If {@code random} or {@code taskFactory} refers to {@code null}.
+     */
     public Dungeon(final Random random, final TaskFactory taskFactory) {
         this(random, taskFactory, true);
     }
 
+    /**
+     * Returns the {@link Random} instance of this dungeon.
+     */
     public Random random() {
         return random;
     }
 
+    /**
+     * Returns the {@link TaskFactory} instance of this dungeon.
+     */
     public TaskFactory getTaskFactory() {
         return taskFactory;
     }
 
+    /**
+     * Returns the start room of this dungeon, which should be right in front of the exit.
+     */
     public Room getStartRoom() {
         return startRoom;
     }
-    
+
+    /**
+     * Returns the specified room of this dungeon.
+     * @param index the room number
+     * @return the specified room
+     * @throws IndexOutOfBoundsException If {@code index} is invalid.
+     * @throws IllegalStateException If the ID of the specified room doesn't match its index in the list.
+     */
     public Room getRoom(int index) {
-        return rooms.get(index);
+        final Room result = rooms.get(index);
+        if (result.getId() != index) {
+            throw new IllegalStateException("Index and room ID differ!");
+        }
+        return result;
     }
 
     /**
@@ -83,8 +134,7 @@ public class Dungeon implements Serializable {
     }
 
     /**
-     * Returns the chance a door moves the player back to an existing room
-     * @return the chance a door moves the player back to an existing room
+     * Returns the chance a door moves the player back to an existing room.
      */
     protected double chanceRoomGoesBack() {
         return 1d / Math.E; // about 0.368d
@@ -101,7 +151,11 @@ public class Dungeon implements Serializable {
         }
         return generateRoom(from);
     }
-    
+
+    /**
+     * Returns the chance of a hamster spawning in a room a hamster can spawn in.
+     * @apiNote Which room the hamster can even spawn in to begin with is decided in {@link Room#Room(boolean, int, Dungeon, Integer)}.
+     */
     public double chanceOfHamsterInRoom() {
         return 0.1d;
     }
@@ -113,7 +167,15 @@ public class Dungeon implements Serializable {
             room.writeObject(dos);
         }
     }
-    
+
+    /**
+     * Reads an {@link Dungeon} instance from the specified stream.
+     * @param dis the {@link DataInputStream} to read from
+     * @param random the {@link Random} instance for the new dungeon
+     * @param taskFactory the {@link TaskFactory} instance for the new dungeon
+     * @return a new {@link Dungeon} instance
+     * @throws IOException If an I/O exception occurs.
+     */
     public static Dungeon readObject(final DataInputStream dis, final Random random, final TaskFactory taskFactory) throws IOException {
         final int roomCount = dis.readInt();
         final List<Room> rooms = new LinkedList<>();
