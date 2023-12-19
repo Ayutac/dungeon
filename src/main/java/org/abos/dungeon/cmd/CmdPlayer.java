@@ -99,7 +99,7 @@ public class CmdPlayer extends Player {
         final Random random = new Random(0);
         final Dungeon dungeon;
         final Player player;
-        final Item hamster = new Pet("Hamster", "A furry little friend.");
+        Item.init();
         try (final DataInputStream dis = new DataInputStream(new FileInputStream(saveFilePath))) {
             dungeon = Dungeon.readObject(dis, random, new TaskFactory(random));
             player = Player.readObject(dis, dungeon, CmdPlayer::new);
@@ -114,7 +114,7 @@ public class CmdPlayer extends Player {
             }
         }
         final int tc = player.getClearedTaskCount();
-        final int hc = player.getInventory().countAll(hamster);
-        System.out.printf("%d task%s cleared, %d hamster%s collected, highest room: %d%n", tc, tc == 1 ? "" : "s", hc, hc == 1 ? "" : "s", player.getHighestRoomNumber());
+        final int pc = player.getInventory().countAll(Pet.class);
+        System.out.printf("%d task%s cleared, %d pet%s collected, highest room: %d%n", tc, tc == 1 ? "" : "s", pc, pc == 1 ? "" : "s", player.getHighestRoomNumber());
     }
 }

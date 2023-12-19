@@ -4,6 +4,8 @@ import java.util.Objects;
 
 public class Thing implements Item {
 
+    public static final String LIST_FILE_NAME = "thingList.csv";
+
     protected String name;
 
     protected String description;

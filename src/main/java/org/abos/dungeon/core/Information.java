@@ -19,7 +19,7 @@ public class Information implements Task {
     /**
      * File name of the information lines.
      */
-    public static final String INFORMATION_LINES_FILE_NAME = "informationLines.txt";
+    public static final String LINES_FILE_NAME = "informationLines.csv";
 
     /**
      * The information lines to randomly generate {@link Information} instances from.
@@ -27,11 +27,11 @@ public class Information implements Task {
     /* package private */ static final List<String> INFORMATION_LINES = new ArrayList<>();
 
     static {
-        final URL linesUrl = Information.class.getClassLoader().getResource(INFORMATION_LINES_FILE_NAME);
+        final URL linesUrl = Information.class.getClassLoader().getResource(LINES_FILE_NAME);
         try {
             INFORMATION_LINES.addAll(Files.readAllLines(new File(linesUrl.getFile()).toPath()));        
         } catch (final IOException ex) {
-            System.err.printf("Reading the file %s failed!%n", INFORMATION_LINES_FILE_NAME);
+            System.err.printf("Reading the file %s failed!%n", LINES_FILE_NAME);
         }
     }
 

@@ -141,6 +141,13 @@ public class Inventory implements Serializable {
         return CollectionUtil.countAll(items, item);
     }
 
+    public int countAll(Class<? extends Item> keyClass) {
+        return items.entrySet().stream()
+                .filter(entry -> keyClass.isInstance(entry.getKey()))
+                .mapToInt(entry -> entry.getValue().size())
+                .sum();
+    }
+
     @Override
     public void writeObject(DataOutputStream dos) throws IOException {
         dos.writeInt(inventoryCapacity);
