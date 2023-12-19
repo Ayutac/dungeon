@@ -6,7 +6,7 @@ public class Thing extends AbstractEntity implements Item {
 
     public Thing(final String name, final String description) {
         super(name, description);
-        Item.itemRegistry.add(this);
+        Item.REGISTRY.add(this);
     }
 
 }

@@ -12,7 +12,7 @@ import java.util.Set;
 
 public interface LivingEntity extends Entity {
 
-    Set<Item> livingEntityRegistry = new HashSet<>();
+    Set<LivingEntity> TEMPLATE_REGISTRY = new HashSet<>();
 
     int getMaxHealthPoints();
 
@@ -31,7 +31,7 @@ public interface LivingEntity extends Entity {
                 if (arr.length != 3) {
                     throw new IllegalStateException(iseErrMsg + line);
                 }
-                new Creature(arr[0], arr[1], Integer.parseInt(arr[2]));
+                TEMPLATE_REGISTRY.add(new Creature(arr[0], arr[1], Integer.parseInt(arr[2])));
             }
         } catch (final IOException ex) {
             System.err.printf(preformattedIoErrMsg, Creature.LIST_FILE_NAME);

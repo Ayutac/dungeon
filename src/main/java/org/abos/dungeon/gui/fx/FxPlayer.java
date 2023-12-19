@@ -2,6 +2,7 @@ package org.abos.dungeon.gui.fx;
 
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
+import org.abos.dungeon.core.reward.Reward;
 import org.abos.dungeon.core.task.Information;
 import org.abos.dungeon.core.Inventory;
 import org.abos.dungeon.core.Player;
@@ -43,5 +44,18 @@ public class FxPlayer extends Player {
             return result.get().equals(question.getAnswer());
         }
         return false;
+    }
+
+    @Override
+    protected void displayRewardAcquisition(Reward reward, int lostAmount) {
+        final String msg;
+        if (lostAmount == 0) {
+            msg = String.format(Reward.PREFORMATTED_REWARD_MSG, reward.entity().getName(), reward.amount());
+        }
+        else {
+            msg = String.format(Reward.PREFORMATTED_REWARD_WITH_LOSS_MSG, reward.entity().getName(), reward.amount(), lostAmount);
+        }
+        final Alert alert = new Alert(Alert.AlertType.INFORMATION, msg, ButtonType.OK);
+        alert.showAndWait();
     }
 }

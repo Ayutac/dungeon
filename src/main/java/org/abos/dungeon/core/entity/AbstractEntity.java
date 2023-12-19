@@ -2,7 +2,7 @@ package org.abos.dungeon.core.entity;
 
 import java.util.Objects;
 
-public abstract class AbstractEntity implements Item {
+public abstract class AbstractEntity implements Entity {
 
     protected String name;
 

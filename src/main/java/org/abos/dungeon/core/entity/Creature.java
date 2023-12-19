@@ -5,9 +5,12 @@ import org.abos.common.Serializable;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.util.List;
 import java.util.Objects;
 
 public class Creature extends AbstractEntity implements LivingEntity, Serializable {
+
+    private static List<Creature> templates;
 
     public static final String LIST_FILE_NAME = "creatureList.csv";
 
@@ -15,14 +18,18 @@ public class Creature extends AbstractEntity implements LivingEntity, Serializab
 
     protected int currentHp;
 
-    public Creature(String name, String description, int maxHp) {
+    public Creature(Creature original) {
+        this(original.name, original.description, original.maxHp);
+        this.currentHp = original.currentHp;
+    }
+
+    public Creature(final String name, final String description, final int maxHp) {
         super(name, description);
         if (maxHp < 0) {
             throw new IllegalArgumentException("Max health points must be positive!");
         }
         this.maxHp = maxHp;
         this.currentHp = maxHp;
-        LivingEntity.livingEntityRegistry.add(this);
     }
 
     @Override
@@ -33,6 +40,13 @@ public class Creature extends AbstractEntity implements LivingEntity, Serializab
     @Override
     public int getCurrentHealthPoints() {
         return currentHp;
+    }
+
+    public static List<Creature> getTemplates() {
+        if (templates == null) {
+            templates = LivingEntity.TEMPLATE_REGISTRY.stream().filter(Creature.class::isInstance).map(Creature.class::cast).toList();
+        }
+        return templates;
     }
 
     @Override

@@ -2,6 +2,8 @@ package org.abos.dungeon.core;
 
 import org.abos.common.Serializable;
 import org.abos.dungeon.core.entity.Creature;
+import org.abos.dungeon.core.entity.Item;
+import org.abos.dungeon.core.reward.Reward;
 import org.abos.dungeon.core.task.Information;
 import org.abos.dungeon.core.task.Question;
 import org.abos.dungeon.core.task.Task;
@@ -82,7 +84,7 @@ public abstract class Player implements Serializable {
             newTask.accept(this);
             if (hasClearedTask(currentRoom.getId())) {
                 highestRoomNumber = Math.max(highestRoomNumber, currentRoom.getId());
-//                collectHamster();
+                collectReward();
             }
             else {
                 currentRoom = oldRoom;
@@ -145,6 +147,40 @@ public abstract class Player implements Serializable {
      * @return {@code true} if the player successfully answered the question, else {@code false}.
      */
     public abstract boolean displayQuestion(final Question question);
+
+
+    /**
+     * Collect the reward in the room if there is one to collect.
+     */
+    protected void collectReward() {
+        final Reward reward = currentRoom.awardReward();
+        if (reward != null) {
+            switch (reward.type()) {
+                case CREATURE -> {
+                    for (int i = 0; i < reward.amount(); i++) {
+                        menagerie.add((Creature)reward.entity());
+                    }
+                    displayRewardAcquisition(reward, 0);
+
+                }
+                case ITEM -> {
+                    int lostAmount = 0;
+                    for (int i = 0; i < reward.amount(); i++) {
+                        if (!inventory.addItem((Item)reward.entity())) {
+                            lostAmount++;
+                        }
+                    }
+                    displayRewardAcquisition(reward, lostAmount);
+                }
+                default -> throw new AssertionError("Unknown type " + reward.type() + " encountered!");
+            }
+        }
+    }
+
+    /**
+     * Displays the acquisition of a reward to the {@link Player}.
+     */
+    protected abstract void displayRewardAcquisition(final Reward reward, final int lostAmount);
 
     /**
      * Returns the number of creatures the {@link Player} has currently in his possession.

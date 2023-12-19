@@ -1,6 +1,7 @@
 package org.abos.dungeon.core;
 
 import org.abos.common.Serializable;
+import org.abos.dungeon.core.reward.Reward;
 import org.abos.dungeon.core.task.Information;
 import org.abos.dungeon.core.task.Question;
 import org.abos.dungeon.core.task.Task;
@@ -78,6 +79,11 @@ public class Room implements Serializable {
     protected final Task task;
 
     /**
+     * @see #getReward()
+     */
+    protected Reward reward;
+
+    /**
      * Unchecked constructor for {@link Serializable} read.
      * 
      * @see #readObject(DataInputStream, Dungeon) 
@@ -121,6 +127,7 @@ public class Room implements Serializable {
             }
             else {
                 task = dungeon.getTaskFactory().apply(id);
+                reward = dungeon.getRewardFactory().apply(id);
             }
         }
     }
@@ -192,6 +199,21 @@ public class Room implements Serializable {
         return task;
     }
 
+    public Reward getReward() {
+        return reward;
+    }
+
+    /**
+     * Gives out the reward in this room, if one is available.
+     * This method does NOT assign it to any player, just removes it from this room.
+     * @return the reward this room had
+     */
+    public Reward awardReward() {
+        final Reward oldReward = reward;
+        reward = null;
+        return oldReward;
+    }
+
     @Override
     public void writeObject(final DataOutputStream dos) throws IOException {
         dos.writeInt(id);
@@ -205,7 +227,10 @@ public class Room implements Serializable {
                 dos.writeInt(door);
             }
         }
-//        dos.writeBoolean(hasHamster);
+        dos.writeBoolean(reward != null);
+        if (reward != null) {
+            reward.writeObject(dos);
+        }
         dos.writeBoolean(task != null);
         if (task != null) {
             dos.writeUTF(task.getClass().getSimpleName());
@@ -234,7 +259,14 @@ public class Room implements Serializable {
             }
             fromId = doors.get(RETURN_ID);
         }
-//        final boolean hasHamster = dis.readBoolean();
+        final boolean hasReward = dis.readBoolean();
+        final Reward reward;
+        if (!hasReward) {
+            reward = null;
+        }
+        else {
+            reward = Reward.readObject(dis);
+        }
         final boolean hasTask = dis.readBoolean();
         final Task task;
         if (!hasTask) {
@@ -252,6 +284,7 @@ public class Room implements Serializable {
             }
         }
         final Room result = new Room(id, dungeon, fromId, doorCount, task);
+        result.reward = reward;
         result.doors.addAll(doors);
         return result;
     }

@@ -1,7 +1,7 @@
 package org.abos.dungeon.core;
 
 import org.abos.common.Serializable;
-import org.abos.dungeon.core.task.DefaultTaskFactory;
+import org.abos.dungeon.core.reward.RewardFactory;
 import org.abos.dungeon.core.task.TaskFactory;
 
 import java.io.DataInputStream;
@@ -44,15 +44,22 @@ public class Dungeon implements Serializable {
     protected TaskFactory taskFactory;
 
     /**
+     * @see #getRewardFactory()
+     */
+    protected RewardFactory rewardFactory;
+
+    /**
      * Creates a new dungeon with the specified parameters.
      * @param random a {@link Random} instance
-     * @param taskFactory a {@link DefaultTaskFactory} instance
+     * @param taskFactory a {@link TaskFactory} instance
+     * @param rewardFactory a {@link RewardFactory} instance
      * @param generateStartRoom if the start room should be generated
-     * @throws NullPointerException If {@code random} or {@code taskFactory} refers to {@code null}.
+     * @throws NullPointerException If {@code random}, {@code taskFactory} or {@code rewardFactory} refers to {@code null}.
      */
-    private Dungeon(final Random random, final TaskFactory taskFactory, final boolean generateStartRoom) {
+    private Dungeon(final Random random, final TaskFactory taskFactory, final RewardFactory rewardFactory, final boolean generateStartRoom) {
         this.random = Objects.requireNonNull(random);
         this.taskFactory = Objects.requireNonNull(taskFactory);
+        this.rewardFactory = Objects.requireNonNull(rewardFactory);
         if (generateStartRoom) {
             startRoom = generateRoom(exitRoom);
         }
@@ -62,10 +69,11 @@ public class Dungeon implements Serializable {
      * Creates a new dungeon with the specified parameters.
      * @param random a {@link Random} instance
      * @param taskFactory a {@link TaskFactory} instance
+     * @param rewardFactory a {@link RewardFactory} instance
      * @throws NullPointerException If {@code random} or {@code taskFactory} refers to {@code null}.
      */
-    public Dungeon(final Random random, final TaskFactory taskFactory) {
-        this(random, taskFactory, true);
+    public Dungeon(final Random random, final TaskFactory taskFactory, final RewardFactory rewardFactory) {
+        this(random, taskFactory, rewardFactory, true);
     }
 
     /**
@@ -80,6 +88,13 @@ public class Dungeon implements Serializable {
      */
     public TaskFactory getTaskFactory() {
         return taskFactory;
+    }
+
+    /**
+     * Returns the {@link RewardFactory} instance of this dungeon.
+     */
+    public RewardFactory getRewardFactory() {
+        return rewardFactory;
     }
 
     /**
@@ -167,13 +182,14 @@ public class Dungeon implements Serializable {
      * @param dis the {@link DataInputStream} to read from
      * @param random the {@link Random} instance for the new dungeon
      * @param taskFactory the {@link TaskFactory} instance for the new dungeon
+     * @param rewardFactory the {@link RewardFactory} instance for the new dungeon
      * @return a new {@link Dungeon} instance
      * @throws IOException If an I/O exception occurs.
      */
-    public static Dungeon readObject(final DataInputStream dis, final Random random, final TaskFactory taskFactory) throws IOException {
+    public static Dungeon readObject(final DataInputStream dis, final Random random, final TaskFactory taskFactory, final RewardFactory rewardFactory) throws IOException {
         final int roomCount = dis.readInt();
         final List<Room> rooms = new LinkedList<>();
-        final Dungeon result = new Dungeon(random, taskFactory, false);
+        final Dungeon result = new Dungeon(random, taskFactory, rewardFactory, false);
         for (int i = 0; i < roomCount; i++) {
             rooms.add(Room.readObject(dis, result));
         }

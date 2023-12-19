@@ -2,8 +2,9 @@ package org.abos.dungeon.cmd;
 
 import org.abos.dungeon.core.*;
 import org.abos.dungeon.core.entity.Item;
-import org.abos.dungeon.core.entity.Creature;
 import org.abos.dungeon.core.entity.LivingEntity;
+import org.abos.dungeon.core.reward.DefaultRewardFactory;
+import org.abos.dungeon.core.reward.Reward;
 import org.abos.dungeon.core.task.Information;
 import org.abos.dungeon.core.task.Question;
 import org.abos.dungeon.core.task.DefaultTaskFactory;
@@ -90,6 +91,18 @@ public class CmdPlayer extends Player {
         return playerAnswer.equals(question.getAnswer());
     }
 
+    @Override
+    protected void displayRewardAcquisition(final Reward reward, final int lostAmount) {
+        if (lostAmount == 0) {
+            System.out.printf(Reward.PREFORMATTED_REWARD_MSG, reward.entity().getName(), reward.amount());
+        }
+        else {
+            System.out.printf(Reward.PREFORMATTED_REWARD_WITH_LOSS_MSG, reward.entity().getName(), reward.amount(), lostAmount);
+        }
+        System.out.print(' ');
+        scanner.nextLine();
+    }
+
     public static void main(String[] args) throws IOException {
         final String saveFilePath = "game.sav";
         final Random random = new Random(0);
@@ -98,9 +111,9 @@ public class CmdPlayer extends Player {
         final Dungeon dungeon;
         final Player player;
         try (final DataInputStream dis = new DataInputStream(new FileInputStream(saveFilePath))) {
-            dungeon = Dungeon.readObject(dis, random, new DefaultTaskFactory(random));
+            dungeon = Dungeon.readObject(dis, random, new DefaultTaskFactory(random), new DefaultRewardFactory(random));
             player = Player.readObject(dis, dungeon, CmdPlayer::new);
-//            dungeon = new Dungeon(random, new TaskFactory(random));
+//            dungeon = new Dungeon(random, new DefaultTaskFactory(random), new DefaultRewardFactory(random));
 //            player = new CmdPlayer(dungeon.getStartRoom(), new Inventory(Inventory.DEFAULT_INVENTORY_CAPACITY, Inventory.DEFAULT_STACK_CAPACITY));
         }
         while (player.getCurrentRoom() != null) {
@@ -111,7 +124,7 @@ public class CmdPlayer extends Player {
             }
         }
         final int tc = player.getClearedTaskCount();
-        final int pc = player.getInventory().countAll(Creature.class);
-        System.out.printf("%d task%s cleared, %d pet%s collected, highest room: %d%n", tc, tc == 1 ? "" : "s", pc, pc == 1 ? "" : "s", player.getHighestRoomNumber());
+        final int ms = player.getMenagerieSize();
+        System.out.printf("%d task%s cleared, %d pet%s collected, highest room: %d%n", tc, tc == 1 ? "" : "s", ms, ms == 1 ? "" : "s", player.getHighestRoomNumber());
     }
 }

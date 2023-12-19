@@ -12,7 +12,7 @@ import java.util.Set;
 
 public interface Item extends Entity {
 
-    Set<Item> itemRegistry = new HashSet<>();
+    Set<Item> REGISTRY = new HashSet<>();
 
     static void init() throws IllegalStateException {
         final String iseErrMsg = "Line with wrong number of arguments detected: ";

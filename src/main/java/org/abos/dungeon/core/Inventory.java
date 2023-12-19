@@ -176,7 +176,7 @@ public class Inventory implements Serializable {
         final int size = dis.readInt();
         for (int i = 0; i < size; i++) {
             final String name = dis.readUTF();
-            final Item item = CollectionUtil.getByName(Item.itemRegistry, name);
+            final Item item = CollectionUtil.getByName(Item.REGISTRY, name);
             if (item == null) {
                 throw new IllegalStateException("Unknown item " + name + " encountered!");
             }
