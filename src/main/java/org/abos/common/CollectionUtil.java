@@ -58,4 +58,12 @@ public final class CollectionUtil {
         }
         return null;
     }
+
+    public static <K> int countAll(final Map<K, ? extends Collection<Integer>> multiMap, K key) {
+        final Collection<Integer> stacks = multiMap.get(key);
+        if (stacks == null) {
+            return 0;
+        }
+        return stacks.stream().mapToInt(Integer::intValue).sum();
+    }
 }

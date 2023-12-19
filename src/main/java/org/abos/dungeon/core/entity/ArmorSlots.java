@@ -1,4 +1,4 @@
-package org.abos.dungeon.core.item;
+package org.abos.dungeon.core.entity;
 
 import org.abos.common.Named;
 import org.abos.common.StringUtil;

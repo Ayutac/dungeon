@@ -2,7 +2,7 @@ package org.abos.dungeon.core;
 
 import org.abos.common.CollectionUtil;
 import org.abos.common.Serializable;
-import org.abos.dungeon.core.item.Item;
+import org.abos.dungeon.core.entity.Item;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -135,6 +135,10 @@ public class Inventory implements Serializable {
             modifiableView.put(entry.getKey(), Collections.unmodifiableList(entry.getValue()));
         }
         return Collections.unmodifiableList(CollectionUtil.getAlphabeticalOrder(modifiableView));
+    }
+
+    public int countAll(Item item) {
+        return CollectionUtil.countAll(items, item);
     }
 
     @Override

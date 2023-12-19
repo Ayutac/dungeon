@@ -1,11 +1,9 @@
-package org.abos.dungeon.core.item;
-
-import org.abos.common.Describable;
+package org.abos.dungeon.core.entity;
 
 import java.util.HashSet;
 import java.util.Set;
 
-public interface Item extends Describable {
+public interface Item extends Entity {
 
     Set<Item> itemRegistry = new HashSet<>();
 

@@ -170,6 +170,10 @@ public abstract class Player implements Serializable {
         return collectedHamsters.size();
     }
 
+    public Inventory getInventory() {
+        return inventory;
+    }
+
     @Override
     public void writeObject(final DataOutputStream dos) throws IOException {
         dos.writeInt(oldRoom.getId());
