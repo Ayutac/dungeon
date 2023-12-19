@@ -1,6 +1,7 @@
 package org.abos.dungeon.cmd;
 
 import org.abos.dungeon.core.*;
+import org.abos.dungeon.core.entity.CraftingRecipe;
 import org.abos.dungeon.core.entity.Item;
 import org.abos.dungeon.core.entity.LivingEntity;
 import org.abos.dungeon.core.reward.DefaultRewardFactory;
@@ -140,6 +141,7 @@ public class CmdPlayer extends Player {
         final Random random = new Random(0);
         Item.init();
         LivingEntity.init();
+        CraftingRecipe.init();
         final Dungeon dungeon;
         final Player player;
         try (final DataInputStream dis = new DataInputStream(new FileInputStream(saveFilePath))) {
