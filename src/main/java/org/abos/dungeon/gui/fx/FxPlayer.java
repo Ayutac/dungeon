@@ -44,10 +44,4 @@ public class FxPlayer extends Player {
         }
         return false;
     }
-
-    @Override
-    protected void displayHamsterAcquisition() {
-        final Alert alert = new Alert(Alert.AlertType.INFORMATION, Player.HAMSTER_ACQUISITION_MSG, ButtonType.OK);
-        alert.showAndWait();
-    }
 }

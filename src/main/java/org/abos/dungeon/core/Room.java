@@ -1,6 +1,5 @@
 package org.abos.dungeon.core;
 
-import org.abos.common.MathUtil;
 import org.abos.common.Serializable;
 import org.abos.dungeon.core.task.Information;
 import org.abos.dungeon.core.task.Question;
@@ -79,22 +78,16 @@ public class Room implements Serializable {
     protected final Task task;
 
     /**
-     * If this room currently contains a hamster or not.
-     */
-    protected boolean hasHamster;
-
-    /**
      * Unchecked constructor for {@link Serializable} read.
      * 
      * @see #readObject(DataInputStream, Dungeon) 
      */
-    private Room(final int id, final Dungeon dungeon, final Integer fromId, final int doorCount, final Task task, final boolean hasHamster) {
+    private Room(final int id, final Dungeon dungeon, final Integer fromId, final int doorCount, final Task task) {
         this.id = id;
         this.dungeon = dungeon;
         this.fromId = fromId;
         this.doorCount = doorCount;
         this.task = task;
-        this.hasHamster = hasHamster;
     }
 
     /**
@@ -130,10 +123,6 @@ public class Room implements Serializable {
                 task = dungeon.getTaskFactory().apply(id);
             }
         }
-        if (MathUtil.isPrime(id)) {
-            hasHamster = dungeon.random().nextDouble() < dungeon.chanceOfHamsterInRoom();
-        }
-        // else hasHamster defaults to false
     }
 
     /**
@@ -203,19 +192,6 @@ public class Room implements Serializable {
         return task;
     }
 
-    /**
-     * Gives out the hamster if this room, if one is available.
-     * This method does NOT assign it to any player, just removes it from this room.
-     * @return {@code true} if a hamster was removed from this room, else {@code false}.
-     */
-    public boolean awardHamster() {
-        final boolean hadHamster = hasHamster;
-        if (hadHamster) {
-            hasHamster = false;
-        }
-        return hadHamster;
-    }
-
     @Override
     public void writeObject(final DataOutputStream dos) throws IOException {
         dos.writeInt(id);
@@ -229,7 +205,7 @@ public class Room implements Serializable {
                 dos.writeInt(door);
             }
         }
-        dos.writeBoolean(hasHamster);
+//        dos.writeBoolean(hasHamster);
         dos.writeBoolean(task != null);
         if (task != null) {
             dos.writeUTF(task.getClass().getSimpleName());
@@ -258,7 +234,7 @@ public class Room implements Serializable {
             }
             fromId = doors.get(RETURN_ID);
         }
-        final boolean hasHamster = dis.readBoolean();
+//        final boolean hasHamster = dis.readBoolean();
         final boolean hasTask = dis.readBoolean();
         final Task task;
         if (!hasTask) {
@@ -275,7 +251,7 @@ public class Room implements Serializable {
                 throw new AssertionError("Unknown task subclass " + taskClass + " encountered!");
             }
         }
-        final Room result = new Room(id, dungeon, fromId, doorCount, task, hasHamster);
+        final Room result = new Room(id, dungeon, fromId, doorCount, task);
         result.doors.addAll(doors);
         return result;
     }

@@ -1,6 +1,7 @@
 package org.abos.dungeon.core;
 
 import org.abos.common.Serializable;
+import org.abos.dungeon.core.entity.Creature;
 import org.abos.dungeon.core.task.Information;
 import org.abos.dungeon.core.task.Question;
 import org.abos.dungeon.core.task.Task;
@@ -15,11 +16,6 @@ import java.util.function.BiFunction;
  * The player roaming through {@link Room Rooms} in a {@link Dungeon}.
  */
 public abstract class Player implements Serializable {
-
-    /**
-     * Message to display when a hamster is found.
-     */
-    protected static final String HAMSTER_ACQUISITION_MSG = "You pick up a hamster you found in the room. Hello little friend!";
 
     /**
      * @see #getCurrentRoom()
@@ -42,9 +38,9 @@ public abstract class Player implements Serializable {
     protected final Set<Integer> clearedTasks = new HashSet<>();
 
     /**
-     * A set of all hamsters the {@link Player} collected, represented by the ID of the hamster's {@link Room}.
+     * A set of all creatures the {@link Player} collected.
      */
-    protected final Set<Integer> collectedHamsters = new HashSet<>();
+    protected final Set<Creature> menagerie = new LinkedHashSet<>();
 
     protected final Inventory inventory;
 
@@ -86,7 +82,7 @@ public abstract class Player implements Serializable {
             newTask.accept(this);
             if (hasClearedTask(currentRoom.getId())) {
                 highestRoomNumber = Math.max(highestRoomNumber, currentRoom.getId());
-                collectHamster();
+//                collectHamster();
             }
             else {
                 currentRoom = oldRoom;
@@ -151,26 +147,11 @@ public abstract class Player implements Serializable {
     public abstract boolean displayQuestion(final Question question);
 
     /**
-     * Collect the hamster in the room if there is one to collect.
+     * Returns the number of creatures the {@link Player} has currently in his possession.
+     * @return a non-negative number indicating the collected creatures
      */
-    protected void collectHamster() {
-        if (currentRoom.awardHamster()) {
-            collectedHamsters.add(currentRoom.getId());
-            displayHamsterAcquisition();
-        }
-    }
-
-    /**
-     * Displays the acquisition of a hamster to the {@link Player}.
-     */
-    protected abstract void displayHamsterAcquisition();
-
-    /**
-     * Returns the number of hamsters the {@link Player} has currently in his possession.
-     * @return a non-negative number indicating the collected hamsters
-     */
-    public int getHamsterCount() {
-        return collectedHamsters.size();
+    public int getMenagerieSize() {
+        return menagerie.size();
     }
 
     public Inventory getInventory() {
@@ -185,9 +166,9 @@ public abstract class Player implements Serializable {
         for (Integer clearedTask : clearedTasks) {
             dos.writeInt(clearedTask);
         }
-        dos.writeInt(collectedHamsters.size());
-        for (Integer hamster : collectedHamsters) {
-            dos.writeInt(hamster);
+        dos.writeInt(menagerie.size());
+        for (Creature creature : menagerie) {
+            creature.writeObject(dos);
         }
         inventory.writeObject(dos);
     }
@@ -208,16 +189,16 @@ public abstract class Player implements Serializable {
         for (int i = 0; i < taskCount; i++) {
             clearedTasks.add(dis.readInt());
         }
-        final int hamsterCount = dis.readInt();
-        final Set<Integer> hamsters = new HashSet<>();
-        for (int i = 0; i < hamsterCount; i++) {
-            hamsters.add(dis.readInt());
+        final int creatureCount = dis.readInt();
+        final Set<Creature> creatures = new LinkedHashSet<>();
+        for (int i = 0; i < creatureCount; i++) {
+            creatures.add(Creature.readObject(dis));
         }
         final Inventory inventory = Inventory.readObject(dis);
         final Player result = constructor.apply(dungeon.getRoom(currentRoom), inventory);
         result.highestRoomNumber = highestRoomNumber;
         result.clearedTasks.addAll(clearedTasks);
-        result.collectedHamsters.addAll(hamsters);
+        result.menagerie.addAll(creatures);
         return result;
     }
     
