@@ -6,7 +6,7 @@ import org.abos.dungeon.core.entity.Creature;
 import org.abos.dungeon.core.entity.LivingEntity;
 import org.abos.dungeon.core.task.Information;
 import org.abos.dungeon.core.task.Question;
-import org.abos.dungeon.core.task.TaskFactory;
+import org.abos.dungeon.core.task.DefaultTaskFactory;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -98,7 +98,7 @@ public class CmdPlayer extends Player {
         final Dungeon dungeon;
         final Player player;
         try (final DataInputStream dis = new DataInputStream(new FileInputStream(saveFilePath))) {
-            dungeon = Dungeon.readObject(dis, random, new TaskFactory(random));
+            dungeon = Dungeon.readObject(dis, random, new DefaultTaskFactory(random));
             player = Player.readObject(dis, dungeon, CmdPlayer::new);
 //            dungeon = new Dungeon(random, new TaskFactory(random));
 //            player = new CmdPlayer(dungeon.getStartRoom(), new Inventory(Inventory.DEFAULT_INVENTORY_CAPACITY, Inventory.DEFAULT_STACK_CAPACITY));

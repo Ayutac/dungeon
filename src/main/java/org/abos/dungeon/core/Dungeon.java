@@ -1,6 +1,7 @@
 package org.abos.dungeon.core;
 
 import org.abos.common.Serializable;
+import org.abos.dungeon.core.task.DefaultTaskFactory;
 import org.abos.dungeon.core.task.TaskFactory;
 
 import java.io.DataInputStream;
@@ -45,7 +46,7 @@ public class Dungeon implements Serializable {
     /**
      * Creates a new dungeon with the specified parameters.
      * @param random a {@link Random} instance
-     * @param taskFactory a {@link TaskFactory} instance
+     * @param taskFactory a {@link DefaultTaskFactory} instance
      * @param generateStartRoom if the start room should be generated
      * @throws NullPointerException If {@code random} or {@code taskFactory} refers to {@code null}.
      */
@@ -151,14 +152,6 @@ public class Dungeon implements Serializable {
             return getRandomGeneratedRoom(from);
         }
         return generateRoom(from);
-    }
-
-    /**
-     * Returns the chance of a hamster spawning in a room a hamster can spawn in.
-     * @apiNote Which room the hamster can even spawn in to begin with is decided in {@link Room#Room(boolean, int, Dungeon, Integer)}.
-     */
-    public double chanceOfHamsterInRoom() {
-        return 0.1d;
     }
 
     @Override
