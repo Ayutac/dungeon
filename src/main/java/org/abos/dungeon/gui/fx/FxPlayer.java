@@ -58,4 +58,16 @@ public class FxPlayer extends Player {
         final Alert alert = new Alert(Alert.AlertType.INFORMATION, msg, ButtonType.OK);
         alert.showAndWait();
     }
+
+    @Override
+    public void displayInventory() {
+        // TODO implement
+        throw new UnsupportedOperationException("Not yet implemented!");
+    }
+
+    @Override
+    public void displayMenagerie() {
+        // TODO implement
+        throw new UnsupportedOperationException("Not yet implemented!");
+    }
 }

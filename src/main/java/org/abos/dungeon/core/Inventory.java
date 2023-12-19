@@ -3,17 +3,18 @@ package org.abos.dungeon.core;
 import org.abos.common.CollectionUtil;
 import org.abos.common.Serializable;
 import org.abos.dungeon.core.entity.Item;
+import org.abos.dungeon.core.entity.ItemStack;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-public class Inventory implements Serializable {
+public class Inventory implements Iterable<ItemStack>, Serializable {
 
     public static final int DEFAULT_INVENTORY_CAPACITY = 10;
 
@@ -40,6 +41,10 @@ public class Inventory implements Serializable {
 
     public int size() {
         return size;
+    }
+
+    public boolean isEmpty() {
+        return size == 0;
     }
 
     protected Integer getFirstNonFullStack(List<Integer> stacks) {
@@ -129,12 +134,23 @@ public class Inventory implements Serializable {
      * @return an unmodifiable view, may be empty but not {@code null}
      * @implNote the generated view is never cached
      */
-    public List<Map.Entry<Item, List<Integer>>> getItemView() {
-        final Map<Item, List<Integer>> modifiableView = new HashMap<>();
-        for (Map.Entry<Item, List<Integer>> entry : items.entrySet()) {
-            modifiableView.put(entry.getKey(), Collections.unmodifiableList(entry.getValue()));
-        }
-        return Collections.unmodifiableList(CollectionUtil.getAlphabeticalOrder(modifiableView));
+    public List<ItemStack> getItemView() {
+        final Map<Item, List<Integer>> modifiableView = new HashMap<>(items);
+        return CollectionUtil.getAlphabeticalOrder(modifiableView).stream()
+                .flatMap(entry -> entry.getValue().stream().map(amount -> new ItemStack(entry.getKey(), amount)))
+                .toList();
+    }
+
+    /**
+     * Returns an iterator over the inventory in form of {@link ItemStack item stacks}.
+     * The remove operation is not supported. Changing the inventory during the use of
+     * this iterator leaves the iterator unchanged.
+     * @return an iterator over the inventory, not {@code null}
+     * @implNote Simply calls {@link Iterable#iterator()} on {@link #getItemView()}, so it's a pretty expensive operation.
+     */
+    @Override
+    public Iterator<ItemStack> iterator() {
+        return getItemView().iterator();
     }
 
     public int countAll(Item item) {
@@ -187,6 +203,7 @@ public class Inventory implements Serializable {
             }
             result.items.put(item, stacks);
         }
+        result.size = size;
         return result;
     }
 

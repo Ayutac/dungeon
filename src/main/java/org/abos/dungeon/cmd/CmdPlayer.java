@@ -16,6 +16,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Random;
 import java.util.Scanner;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 public class CmdPlayer extends Player {
 
@@ -103,6 +105,36 @@ public class CmdPlayer extends Player {
         scanner.nextLine();
     }
 
+    @Override
+    public void displayInventory() {
+        if (inventory.isEmpty()) {
+            System.out.print("Inventory is empty!");
+        }
+        else {
+            final String preformatted = "%s: %d";
+            System.out.print(StreamSupport.stream(inventory.spliterator(), false)
+                    .map(s -> String.format(preformatted, s.item().getName(), s.amount()))
+                    .collect(Collectors.joining("%n")));
+        }
+        System.out.print(' ');
+        scanner.nextLine();
+    }
+
+    @Override
+    public void displayMenagerie() {
+        if (menagerie.isEmpty()) {
+            System.out.print("Menagerie is empty!");
+        }
+        else {
+            final String preformatted = "%s (%d/%d): %s";
+            System.out.print(menagerie.stream()
+                    .map(c -> String.format(preformatted, c.getName(), c.getCurrentHealthPoints(), c.getMaxHealthPoints(), c.getDescription()))
+                    .collect(Collectors.joining("%n")));
+        }
+        System.out.print(' ');
+        scanner.nextLine();
+    }
+
     public static void main(String[] args) throws IOException {
         final String saveFilePath = "game.sav";
         final Random random = new Random(0);
@@ -126,5 +158,7 @@ public class CmdPlayer extends Player {
         final int tc = player.getClearedTaskCount();
         final int ms = player.getMenagerieSize();
         System.out.printf("%d task%s cleared, %d pet%s collected, highest room: %d%n", tc, tc == 1 ? "" : "s", ms, ms == 1 ? "" : "s", player.getHighestRoomNumber());
+        player.displayMenagerie();
+        player.displayInventory();
     }
 }

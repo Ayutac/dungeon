@@ -182,6 +182,10 @@ public abstract class Player implements Serializable {
      */
     protected abstract void displayRewardAcquisition(final Reward reward, final int lostAmount);
 
+    public abstract void displayInventory();
+
+    public abstract void displayMenagerie();
+
     /**
      * Returns the number of creatures the {@link Player} has currently in his possession.
      * @return a non-negative number indicating the collected creatures
