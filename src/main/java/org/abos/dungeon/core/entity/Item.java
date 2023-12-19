@@ -14,21 +14,6 @@ public interface Item extends Entity {
 
     Set<Item> itemRegistry = new HashSet<>();
 
-    /**
-     * Returns true if and only if the other object is the same item as this one.
-     * @param obj the object to compare, {@code null} is allowed but will always return {@code false}.
-     * @return {@code true} if the items are the same, else {@code false}
-     */
-    @Override
-    boolean equals(Object obj);
-
-    /**
-     * Returns the hash code of this item. Different item instances who {@link #equals(Object) equal} each other return the same hash code.
-     * @return the hash code of this item
-     */
-    @Override
-    int hashCode();
-
     static void init() throws IllegalStateException {
         final String iseErrMsg = "Line with wrong number of arguments detected: ";
         final String preformattedIoErrMsg = "Reading the file %s failed!%n";
@@ -46,19 +31,6 @@ public interface Item extends Entity {
             }
         } catch (final IOException ex) {
             System.err.printf(preformattedIoErrMsg, Thing.LIST_FILE_NAME);
-        }
-        try {
-            url = Information.class.getClassLoader().getResource(Pet.LIST_FILE_NAME);
-            lines = Files.readAllLines(new File(url.getFile()).toPath());
-            for (String line : lines) {
-                final String[] arr = line.split(",");
-                if (arr.length != 2) {
-                    throw new IllegalStateException(iseErrMsg + line);
-                }
-                new Pet(arr[0], arr[1]);
-            }
-        } catch (final IOException ex) {
-            System.err.printf(preformattedIoErrMsg, Pet.LIST_FILE_NAME);
         }
         try {
             url = Information.class.getClassLoader().getResource(Plant.LIST_FILE_NAME);

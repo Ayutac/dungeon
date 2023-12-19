@@ -1,6 +1,6 @@
 package org.abos.dungeon.core.entity;
 
-public class Plant extends Thing implements LivingEntity {
+public class Plant extends Thing {
 
     public static final String LIST_FILE_NAME = "plantList.csv";
 

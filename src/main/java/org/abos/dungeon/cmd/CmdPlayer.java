@@ -2,7 +2,8 @@ package org.abos.dungeon.cmd;
 
 import org.abos.dungeon.core.*;
 import org.abos.dungeon.core.entity.Item;
-import org.abos.dungeon.core.entity.Pet;
+import org.abos.dungeon.core.entity.Creature;
+import org.abos.dungeon.core.entity.LivingEntity;
 import org.abos.dungeon.core.task.Information;
 import org.abos.dungeon.core.task.Question;
 import org.abos.dungeon.core.task.TaskFactory;
@@ -100,9 +101,10 @@ public class CmdPlayer extends Player {
     public static void main(String[] args) throws IOException {
         final String saveFilePath = "game.sav";
         final Random random = new Random(0);
+        Item.init();
+        LivingEntity.init();
         final Dungeon dungeon;
         final Player player;
-        Item.init();
         try (final DataInputStream dis = new DataInputStream(new FileInputStream(saveFilePath))) {
             dungeon = Dungeon.readObject(dis, random, new TaskFactory(random));
             player = Player.readObject(dis, dungeon, CmdPlayer::new);
@@ -117,7 +119,7 @@ public class CmdPlayer extends Player {
             }
         }
         final int tc = player.getClearedTaskCount();
-        final int pc = player.getInventory().countAll(Pet.class);
+        final int pc = player.getInventory().countAll(Creature.class);
         System.out.printf("%d task%s cleared, %d pet%s collected, highest room: %d%n", tc, tc == 1 ? "" : "s", pc, pc == 1 ? "" : "s", player.getHighestRoomNumber());
     }
 }
