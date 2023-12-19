@@ -112,7 +112,7 @@ public class CmdPlayer extends Player {
         }
         else {
             final String preformatted = "%s: %d";
-            System.out.print(StreamSupport.stream(inventory.spliterator(), false)
+            System.out.printf(StreamSupport.stream(inventory.spliterator(), false)
                     .map(s -> String.format(preformatted, s.item().getName(), s.amount()))
                     .collect(Collectors.joining("%n")));
         }
@@ -127,7 +127,7 @@ public class CmdPlayer extends Player {
         }
         else {
             final String preformatted = "%s (%d/%d): %s";
-            System.out.print(menagerie.stream()
+            System.out.printf(menagerie.stream()
                     .map(c -> String.format(preformatted, c.getName(), c.getCurrentHealthPoints(), c.getMaxHealthPoints(), c.getDescription()))
                     .collect(Collectors.joining("%n")));
         }
