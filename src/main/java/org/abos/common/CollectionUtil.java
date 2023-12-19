@@ -11,6 +11,16 @@ public final class CollectionUtil {
         /* No instantiation. */
     }
 
+    public static <T> T getRandomEntry(final Collection<T> collection, final Random random) {
+        int selection = random.nextInt(collection.size());
+        final Iterator<T> it = collection.iterator();
+        while (selection > 0) {
+            it.next();
+            selection--;
+        }
+        return it.next();
+    }
+
     /**
      * Returns a random entry from the given map.
      *
