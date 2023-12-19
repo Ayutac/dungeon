@@ -1,6 +1,8 @@
-package org.abos.dungeon.core;
+package org.abos.dungeon.core.task;
 
 import org.abos.common.Serializable;
+import org.abos.dungeon.core.Player;
+import org.abos.dungeon.core.Room;
 
 import java.util.function.Consumer;
 

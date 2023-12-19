@@ -2,6 +2,9 @@ package org.abos.dungeon.core;
 
 import org.abos.common.MathUtil;
 import org.abos.common.Serializable;
+import org.abos.dungeon.core.task.Information;
+import org.abos.dungeon.core.task.Question;
+import org.abos.dungeon.core.task.Task;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;

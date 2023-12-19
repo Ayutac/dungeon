@@ -1,7 +1,8 @@
-package org.abos.dungeon.core;
+package org.abos.dungeon.core.task;
 
 import org.abos.common.CollectionUtil;
 import org.abos.common.MathUtil;
+import org.abos.dungeon.core.Player;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;

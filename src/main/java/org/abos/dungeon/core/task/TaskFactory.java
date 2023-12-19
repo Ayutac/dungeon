@@ -1,4 +1,4 @@
-package org.abos.dungeon.core;
+package org.abos.dungeon.core.task;
 
 import java.util.Objects;
 import java.util.Random;
@@ -29,14 +29,19 @@ public class TaskFactory implements Function<Integer, Task> {
         return random;
     }
 
+    /**
+     * Takes in the room number and returns an appropriate task.
+     * @param roomNumber the room number
+     * @return a task, not {@code null}
+     */
     @Override
-    public Task apply(Integer integer) {
+    public Task apply(Integer roomNumber) {
         return switch (random().nextInt(6)) {
-            case 0 -> Question.getSimpleArithmQuestion(random(), integer);
-            case 1 -> Question.getSquareQuestion(random(), integer);
-            case 2 -> Question.getSquareRootQuestion(random(), integer);
-            case 3 -> Question.getFactorialQuestion(random(), integer);
-            case 4 -> Question.getDigitQuestion(random(), integer);
+            case 0 -> Question.getSimpleArithmQuestion(random(), roomNumber);
+            case 1 -> Question.getSquareQuestion(random(), roomNumber);
+            case 2 -> Question.getSquareRootQuestion(random(), roomNumber);
+            case 3 -> Question.getFactorialQuestion(random(), roomNumber);
+            case 4 -> Question.getDigitQuestion(random(), roomNumber);
             case 5 -> Information.getRandomInformation(random());
             default -> throw new AssertionError("Unreachable code reached!");
         };

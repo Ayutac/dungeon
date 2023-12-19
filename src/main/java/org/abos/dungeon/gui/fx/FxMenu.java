@@ -6,7 +6,7 @@ import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import org.abos.dungeon.core.Dungeon;
 import org.abos.dungeon.core.Inventory;
-import org.abos.dungeon.core.TaskFactory;
+import org.abos.dungeon.core.task.TaskFactory;
 import org.abos.dungeon.core.entity.Item;
 
 import java.util.Random;

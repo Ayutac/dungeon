@@ -1,6 +1,7 @@
 package org.abos.dungeon.core;
 
 import org.abos.common.Serializable;
+import org.abos.dungeon.core.task.TaskFactory;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;

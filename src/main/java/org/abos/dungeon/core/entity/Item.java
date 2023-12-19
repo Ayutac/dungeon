@@ -1,6 +1,6 @@
 package org.abos.dungeon.core.entity;
 
-import org.abos.dungeon.core.Information;
+import org.abos.dungeon.core.task.Information;
 
 import java.io.File;
 import java.io.IOException;

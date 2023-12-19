@@ -3,6 +3,9 @@ package org.abos.dungeon.cmd;
 import org.abos.dungeon.core.*;
 import org.abos.dungeon.core.entity.Item;
 import org.abos.dungeon.core.entity.Pet;
+import org.abos.dungeon.core.task.Information;
+import org.abos.dungeon.core.task.Question;
+import org.abos.dungeon.core.task.TaskFactory;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -74,14 +77,14 @@ public class CmdPlayer extends Player {
     }
 
     @Override
-    protected void displayInformation(Information information) {
+    public void displayInformation(Information information) {
         System.out.print(information.getText());
         System.out.print(' ');
         scanner.nextLine();
     }
 
     @Override
-    protected boolean displayQuestion(final Question question) {
+    public boolean displayQuestion(final Question question) {
         System.out.print(question.getQuestion());
         System.out.print(' ');
         String playerAnswer = scanner.nextLine();

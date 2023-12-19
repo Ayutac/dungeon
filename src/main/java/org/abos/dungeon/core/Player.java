@@ -1,6 +1,9 @@
 package org.abos.dungeon.core;
 
 import org.abos.common.Serializable;
+import org.abos.dungeon.core.task.Information;
+import org.abos.dungeon.core.task.Question;
+import org.abos.dungeon.core.task.Task;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -138,14 +141,14 @@ public abstract class Player implements Serializable {
      * Display an {@link Information} instance to the {@link Player}.
      * @param information the information to display
      */
-    protected abstract void displayInformation(final Information information);
+    public abstract void displayInformation(final Information information);
 
     /**
      * Display a {@link Question} instance to the {@link Player} and listens to the player's answer.
      * @param question the question to ask
      * @return {@code true} if the player successfully answered the question, else {@code false}.
      */
-    protected abstract boolean displayQuestion(final Question question);
+    public abstract boolean displayQuestion(final Question question);
 
     /**
      * Collect the hamster in the room if there is one to collect.
