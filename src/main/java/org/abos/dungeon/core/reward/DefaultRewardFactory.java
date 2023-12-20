@@ -29,7 +29,7 @@ public class DefaultRewardFactory implements RewardFactory {
     @Override
     public Reward apply(final Integer roomNumber, final Player player) {
         if (MathUtil.isPrime(roomNumber)) {
-            if (random().nextDouble() < 0.2) {
+            if (random().nextDouble() < 0.2 + 0.01 * player.getInventory().countAll("Raspberry")) {
                 var templates = Creature.getTemplates();
                 return new Reward(RewardType.CREATURE, new Creature(templates.get(random().nextInt(templates.size()))), 1);
             }

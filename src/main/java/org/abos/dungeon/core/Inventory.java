@@ -157,6 +157,10 @@ public class Inventory implements Iterable<ItemStack>, Serializable {
         return CollectionUtil.countAll(items, item);
     }
 
+    public int countAll(String itemName) {
+        return countAll(CollectionUtil.getByName(Item.REGISTRY, itemName));
+    }
+
     public int countAll(Class<? extends Item> keyClass) {
         return items.entrySet().stream()
                 .filter(entry -> keyClass.isInstance(entry.getKey()))
