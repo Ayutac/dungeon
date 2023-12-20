@@ -153,7 +153,7 @@ public abstract class Player implements Serializable {
      * Collect the reward in the room if there is one to collect.
      */
     protected void collectReward() {
-        final Reward reward = currentRoom.awardReward();
+        final Reward reward = currentRoom.awardReward(this);
         if (reward != null) {
             switch (reward.type()) {
                 case CREATURE -> {

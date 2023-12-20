@@ -2,6 +2,7 @@ package org.abos.dungeon.core.reward;
 
 import org.abos.common.CollectionUtil;
 import org.abos.common.MathUtil;
+import org.abos.dungeon.core.Player;
 import org.abos.dungeon.core.entity.Creature;
 import org.abos.dungeon.core.entity.Item;
 
@@ -26,7 +27,7 @@ public class DefaultRewardFactory implements RewardFactory {
      * @return the reward or {@code null} if there is no reward
      */
     @Override
-    public Reward apply(Integer roomNumber) {
+    public Reward apply(final Integer roomNumber, final Player player) {
         if (MathUtil.isPrime(roomNumber)) {
             if (random().nextDouble() < 0.2) {
                 var templates = Creature.getTemplates();
