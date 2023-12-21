@@ -6,6 +6,7 @@ import org.abos.common.Serializable;
 import org.abos.dungeon.core.entity.Creature;
 import org.abos.dungeon.core.entity.Entity;
 import org.abos.dungeon.core.entity.Item;
+import org.abos.dungeon.core.entity.PermanentUpgrade;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -36,6 +37,7 @@ public record Reward(RewardType type, Entity entity, int amount) implements Seri
         switch (type) {
             case CREATURE -> ((Creature)entity).writeObject(dos);
             case ITEM -> dos.writeUTF(entity.getName());
+            case PERMANENT_UPGRADE -> dos.writeUTF(((PermanentUpgrade)entity).name());
             default -> ErrorUtil.unknownEnumEntry(type);
         }
         dos.writeInt(amount);
@@ -53,6 +55,7 @@ public record Reward(RewardType type, Entity entity, int amount) implements Seri
         switch (type) {
             case CREATURE -> entity = Creature.readObject(dis);
             case ITEM -> entity = CollectionUtil.getByName(Item.REGISTRY, dis.readUTF());
+            case PERMANENT_UPGRADE -> entity = PermanentUpgrade.valueOf(dis.readUTF());
             default -> throw new IllegalStateException("Unknown enum entry " + type.name() + " detected!");
         }
         return new Reward(type, entity, dis.readInt());

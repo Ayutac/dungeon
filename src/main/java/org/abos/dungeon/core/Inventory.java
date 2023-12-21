@@ -60,6 +60,14 @@ public class Inventory implements Iterable<ItemStack>, Serializable {
         this.locked = locked;
     }
 
+    public void increaseCapacity() {
+        inventoryCapacity++;
+    }
+
+    public void increaseStackCapacity() {
+        stackCapacity++;
+    }
+
     /**
      * Returns an unmodifiable view of all different items in this inventory.
      * @return an unmodifiable set, might be empty but not {@code null}

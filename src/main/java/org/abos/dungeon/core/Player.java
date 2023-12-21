@@ -7,6 +7,7 @@ import org.abos.dungeon.core.crafting.CraftingInput;
 import org.abos.dungeon.core.crafting.CraftingOutput;
 import org.abos.dungeon.core.entity.Creature;
 import org.abos.dungeon.core.entity.Item;
+import org.abos.dungeon.core.entity.PermanentUpgrade;
 import org.abos.dungeon.core.reward.Reward;
 import org.abos.dungeon.core.task.Information;
 import org.abos.dungeon.core.task.Question;
@@ -211,6 +212,12 @@ public abstract class Player implements Serializable {
                         }
                     }
                     displayRewardAcquisition(reward, lostAmount);
+                }
+                case PERMANENT_UPGRADE -> {
+                    for (int i = 0; i < reward.amount(); i++) {
+                        ((PermanentUpgrade)reward.entity()).accept(this);
+                    }
+                    displayRewardAcquisition(reward, 0);
                 }
                 default -> ErrorUtil.unknownEnumEntry(reward.type());
             }

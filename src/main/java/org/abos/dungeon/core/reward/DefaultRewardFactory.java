@@ -5,6 +5,7 @@ import org.abos.common.MathUtil;
 import org.abos.dungeon.core.Player;
 import org.abos.dungeon.core.entity.Creature;
 import org.abos.dungeon.core.entity.Item;
+import org.abos.dungeon.core.entity.PermanentUpgrade;
 
 import java.util.Objects;
 import java.util.Random;
@@ -28,7 +29,10 @@ public class DefaultRewardFactory implements RewardFactory {
      */
     @Override
     public Reward apply(final Integer roomNumber, final Player player) {
-        if (MathUtil.isPrime(roomNumber)) {
+        if (roomNumber > 5 && MathUtil.isFibonacci(roomNumber)) {
+            return new Reward(RewardType.PERMANENT_UPGRADE, PermanentUpgrade.values()[random().nextInt(PermanentUpgrade.values().length)], 1);
+        }
+        else if (MathUtil.isPrime(roomNumber)) {
             if (random().nextDouble() < 0.2 + 0.01 * player.getInventory().countAll("Raspberry")) {
                 var templates = Creature.getTemplates();
                 return new Reward(RewardType.CREATURE, new Creature(CollectionUtil.getRandomEntry(templates, random())), 1);

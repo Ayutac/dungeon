@@ -10,7 +10,11 @@ public final class MathUtil {
     
     private static final Deque<Integer> CACHED_PRIMES = new LinkedList<>();
 
-    private static int biggestNumberChecked;
+    private static final Deque<Integer> CACHED_FIBONACCI = new LinkedList<>();
+
+    private static int biggestNumberCheckedForPrime;
+
+    private static int biggestNumberCheckedForFibonacci;
     
     private MathUtil() {
         /* No instantiation. */
@@ -19,7 +23,11 @@ public final class MathUtil {
     static {
         // make sure list is not empty
         CACHED_PRIMES.addLast(2);
-        biggestNumberChecked = 2;
+        biggestNumberCheckedForPrime = 2;
+        // make sure list has at least two entries
+        CACHED_FIBONACCI.add(1);
+        CACHED_FIBONACCI.add(1);
+        biggestNumberCheckedForFibonacci = 1;
     }
     
     /**
@@ -71,15 +79,41 @@ public final class MathUtil {
         if (n < CACHED_PRIMES.getFirst()) {
             return false;
         }
-        if (n <= biggestNumberChecked) {
+        if (n <= biggestNumberCheckedForPrime) {
             return CACHED_PRIMES.contains(n);
         }
         // this ensures the primes remain ordered by size and none is missed
         for (int k = CACHED_PRIMES.getLast() + 1; k <= n; k++) {
             cacheIfPrime(k);
         }
-        biggestNumberChecked = n;
+        biggestNumberCheckedForPrime = n;
         return CACHED_PRIMES.contains(n);
+    }
+
+    /**
+     * Tests if the specified integer is fibonacci. The fibonacci numbers
+     * are 1, 1, and then the sum of the previous two fibonacci numbers, e.g. 2, 3, 5, 8, 13, ...
+     * @param n the number to check
+     * @return {@code true} if n is fibonacci, else {@code false}.
+     */
+    public static boolean isFibonacci(final int n) {
+        if (n < 1) {
+            return false;
+        }
+        int lastFib;
+        while (n > biggestNumberCheckedForFibonacci) {
+            lastFib = CACHED_FIBONACCI.pollLast();
+            try {
+                biggestNumberCheckedForFibonacci = Math.addExact(lastFib, CACHED_FIBONACCI.getLast());
+            }
+            catch (ArithmeticException ex) {
+                // we can't go higher than this
+                return false;
+            }
+            CACHED_FIBONACCI.addLast(lastFib);
+            CACHED_FIBONACCI.addLast(biggestNumberCheckedForFibonacci);
+        }
+        return CACHED_FIBONACCI.contains(n);
     }
 
 }
