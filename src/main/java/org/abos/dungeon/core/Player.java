@@ -1,5 +1,6 @@
 package org.abos.dungeon.core;
 
+import org.abos.common.ErrorUtil;
 import org.abos.common.Serializable;
 import org.abos.dungeon.core.crafting.Crafting;
 import org.abos.dungeon.core.crafting.CraftingInput;
@@ -211,7 +212,7 @@ public abstract class Player implements Serializable {
                     }
                     displayRewardAcquisition(reward, lostAmount);
                 }
-                default -> throw new AssertionError("Unknown type " + reward.type() + " encountered!");
+                default -> ErrorUtil.unknownEnumEntry(reward.type());
             }
         }
     }

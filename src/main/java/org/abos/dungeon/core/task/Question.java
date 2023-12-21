@@ -1,6 +1,7 @@
 package org.abos.dungeon.core.task;
 
 import org.abos.common.CollectionUtil;
+import org.abos.common.ErrorUtil;
 import org.abos.common.MathUtil;
 import org.abos.dungeon.core.Player;
 
@@ -227,7 +228,7 @@ public class Question implements Task {
             case 1 -> getSubtractionQuestion(random, roomNumber);
             case 2 -> getMultiplicationQuestion(random, roomNumber);
             case 3 -> getDivisionQuestion(random, roomNumber);
-            default -> throw new AssertionError("Unreachable code reached!");
+            default -> ErrorUtil.unreachableCode();
         };
     }
 

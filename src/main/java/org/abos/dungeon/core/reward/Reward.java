@@ -1,6 +1,7 @@
 package org.abos.dungeon.core.reward;
 
 import org.abos.common.CollectionUtil;
+import org.abos.common.ErrorUtil;
 import org.abos.common.Serializable;
 import org.abos.dungeon.core.entity.Creature;
 import org.abos.dungeon.core.entity.Entity;
@@ -35,7 +36,7 @@ public record Reward(RewardType type, Entity entity, int amount) implements Seri
         switch (type) {
             case CREATURE -> ((Creature)entity).writeObject(dos);
             case ITEM -> dos.writeUTF(entity.getName());
-            default -> throw new AssertionError("Unknown enum entry " + type.name() + " detected!");
+            default -> ErrorUtil.unknownEnumEntry(type);
         }
         dos.writeInt(amount);
     }

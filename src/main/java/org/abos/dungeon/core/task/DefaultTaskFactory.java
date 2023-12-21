@@ -1,5 +1,7 @@
 package org.abos.dungeon.core.task;
 
+import org.abos.common.ErrorUtil;
+
 import java.util.Objects;
 import java.util.Random;
 
@@ -40,7 +42,7 @@ public class DefaultTaskFactory implements TaskFactory {
             case 3 -> Question.getFactorialQuestion(random(), roomNumber);
             case 4 -> Question.getDigitQuestion(random(), roomNumber);
             case 5 -> Information.getRandomInformation(random());
-            default -> throw new AssertionError("Unreachable code reached!");
+            default -> ErrorUtil.unreachableCode();
         };
     }
 
