@@ -18,22 +18,26 @@ import java.util.Random;
  */
 public class RandomNpc extends AbstractNpc {
 
+    protected final boolean forwardOnly;
+
     /**
-     * Creates a new {@link Player} instance.
+     * Creates a new {@link RandomNpc} instance.
      *
-     * @param startRoom The room the player starts in. Can be different from {@link org.abos.dungeon.core.Dungeon#getStartRoom()},
+     * @param startRoom The room the NPC starts in. Can be different from {@link Dungeon#getStartRoom()},
      *                  but shouldn't be the exit room. Not {@code null}.
      * @param inventory the player's inventory, not {@code null}
      * @param random a {@link Random} instance
+     * @param forwardOnly if the NPC should never use door 0
      * @throws NullPointerException If {@code startRoom}, {@code inventory} or {@code random} refers to {@code null}.
      */
-    public RandomNpc(final Room startRoom, final Inventory inventory, final Random random) {
+    public RandomNpc(final Room startRoom, final Inventory inventory, final Random random, final boolean forwardOnly) {
         super(startRoom, inventory, random);
+        this.forwardOnly = forwardOnly;
     }
 
     @Override
     protected Room selectDoor() {
-        final int selection = random.nextInt(currentRoom.getDoorCount());
+        final int selection = random.nextInt(forwardOnly ? 1 : 0, currentRoom.getDoorCount());
         if (currentRoom.getId() == 0 && selection == 0) {
             // otherwise the ID of the exit rooms throws an IooB
             return null;
@@ -46,6 +50,10 @@ public class RandomNpc extends AbstractNpc {
         return CollectionUtil.getRandomEntry(inventory.getAllItems(), random);
     }
 
+    /**
+     * Does a test run with the NPC.
+     * @param args ignored
+     */
     public static void main(String[] args) {
         final Random random = new Random();
         Item.init();
@@ -54,7 +62,7 @@ public class RandomNpc extends AbstractNpc {
         final Dungeon dungeon;
         final Player player;
         dungeon = new Dungeon(random, new DefaultTaskFactory(random), new DefaultRewardFactory(random));
-        player = new RandomNpc(dungeon.getStartRoom(), new Inventory(Inventory.DEFAULT_INVENTORY_CAPACITY, Inventory.DEFAULT_STACK_CAPACITY), random);
+        player = new RandomNpc(dungeon.getStartRoom(), new Inventory(Inventory.DEFAULT_INVENTORY_CAPACITY, Inventory.DEFAULT_STACK_CAPACITY), random, true);
         final int maxSteps = 100_000;
         int steps = 0;
         while (player.getCurrentRoom() != null && steps < maxSteps) {
