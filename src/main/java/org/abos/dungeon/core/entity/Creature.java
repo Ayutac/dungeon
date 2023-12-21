@@ -5,15 +5,16 @@ import org.abos.common.Serializable;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.util.List;
 import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * A {@link LivingEntity} implementation based on {@link AbstractEntity}.
  */
 public class Creature extends AbstractEntity implements LivingEntity, Serializable {
 
-    private static List<Creature> templates;
+    private static Set<Creature> templates;
 
     /**
      * Name of the file containing the different creatures.
@@ -59,9 +60,9 @@ public class Creature extends AbstractEntity implements LivingEntity, Serializab
         return currentHp;
     }
 
-    public static List<Creature> getTemplates() {
+    public static Set<Creature> getTemplates() {
         if (templates == null) {
-            templates = LivingEntity.TEMPLATE_REGISTRY.stream().filter(Creature.class::isInstance).map(Creature.class::cast).toList();
+            templates = LivingEntity.TEMPLATE_REGISTRY.stream().filter(Creature.class::isInstance).map(Creature.class::cast).collect(Collectors.toSet());
         }
         return templates;
     }
