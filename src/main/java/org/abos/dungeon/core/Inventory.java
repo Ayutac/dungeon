@@ -8,12 +8,14 @@ import org.abos.dungeon.core.entity.ItemStack;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 
 public class Inventory implements Iterable<ItemStack>, Serializable {
 
@@ -56,6 +58,14 @@ public class Inventory implements Iterable<ItemStack>, Serializable {
 
     public void setLocked(boolean locked) {
         this.locked = locked;
+    }
+
+    /**
+     * Returns an unmodifiable view of all different items in this inventory.
+     * @return an unmodifiable set, might be empty but not {@code null}
+     */
+    public Set<Item> getAllItems() {
+        return Collections.unmodifiableSet(items.keySet());
     }
 
     protected Integer getFirstNonFullStack(List<Integer> stacks) {
@@ -246,6 +256,19 @@ public class Inventory implements Iterable<ItemStack>, Serializable {
     @Override
     public int hashCode() {
         return Objects.hash(items, inventoryCapacity, stackCapacity);
+    }
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder(getClass().getSimpleName());
+        sb.append("{");
+        sb.append("inventoryCapacity=").append(inventoryCapacity);
+        sb.append(", stackCapacity=").append(stackCapacity);
+        sb.append(", size=").append(size);
+        sb.append(", locked=").append(locked);
+        sb.append(", items=").append(items);
+        sb.append('}');
+        return sb.toString();
     }
 
     @Override

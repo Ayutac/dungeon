@@ -34,4 +34,13 @@ public abstract class AbstractEntity implements Entity {
     public int hashCode() {
         return Objects.hash(name, description);
     }
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder(getClass().getSimpleName());
+        sb.append("{");
+        sb.append("name='").append(name).append('\'');
+        sb.append('}');
+        return sb.toString();
+    }
 }

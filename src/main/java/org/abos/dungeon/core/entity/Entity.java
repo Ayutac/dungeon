@@ -18,4 +18,11 @@ public interface Entity extends Describable {
      */
     @Override
     int hashCode();
+
+    /**
+     * Returns at least the class and name of this entity.
+     * @return a string describing this entity, not {@code null}.
+     */
+    @Override
+    String toString();
 }
