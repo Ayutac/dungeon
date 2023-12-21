@@ -1,6 +1,9 @@
 package org.abos.dungeon.core;
 
 import org.abos.common.Serializable;
+import org.abos.dungeon.core.crafting.Crafting;
+import org.abos.dungeon.core.crafting.CraftingInput;
+import org.abos.dungeon.core.crafting.CraftingOutput;
 import org.abos.dungeon.core.entity.Creature;
 import org.abos.dungeon.core.entity.Item;
 import org.abos.dungeon.core.reward.Reward;
@@ -148,6 +151,42 @@ public abstract class Player implements Serializable {
      */
     public abstract boolean displayQuestion(final Question question);
 
+    public void craft() {
+        displayCraftingIngredients();
+        final Item input1 = selectItem("First ingredient?");
+        if (input1 == null) {
+            displayInformation(new Information(("This item doesn't exist!")));
+            return;
+        }
+        final Item input2 = selectItem("Second ingredient?");
+        if (input2 == null) {
+            displayInformation(new Information(("This item doesn't exist!")));
+            return;
+        }
+        final CraftingInput input = new CraftingInput(input1, input2);
+        if (!inventory.contains(input)) {
+            displayInformation(new Information("You don't have these ingredients!"));
+            return;
+        }
+        final CraftingOutput output = Crafting.RECIPES.get(input);
+        if (output == null) {
+            // TODO display crafting diss
+            return;
+        }
+        if (!inventory.removeAll(input)) {
+            throw new AssertionError("Ingredients have vanished!");
+        }
+        displayCraftingResult(output);
+        if (!inventory.addAll(output)) {
+            // TODO notify player part of output has been lost
+        }
+    }
+
+    protected abstract void displayCraftingIngredients();
+
+    protected abstract void displayCraftingResult(final CraftingOutput output);
+
+    protected abstract Item selectItem(final String msg);
 
     /**
      * Collect the reward in the room if there is one to collect.
@@ -182,7 +221,7 @@ public abstract class Player implements Serializable {
      */
     protected abstract void displayRewardAcquisition(final Reward reward, final int lostAmount);
 
-    public abstract void displayInventory();
+    public abstract void displayInventory(final Inventory inventory);
 
     public abstract void displayMenagerie();
 

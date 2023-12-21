@@ -13,6 +13,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 public class Inventory implements Iterable<ItemStack>, Serializable {
 
@@ -27,6 +28,8 @@ public class Inventory implements Iterable<ItemStack>, Serializable {
     protected int stackCapacity;
 
     protected int size;
+
+    protected boolean locked;
 
     public Inventory(final int inventoryCapacity, final int stackCapacity) {
         if (inventoryCapacity <= 0) {
@@ -47,6 +50,14 @@ public class Inventory implements Iterable<ItemStack>, Serializable {
         return size == 0;
     }
 
+    public boolean isLocked() {
+        return locked;
+    }
+
+    public void setLocked(boolean locked) {
+        this.locked = locked;
+    }
+
     protected Integer getFirstNonFullStack(List<Integer> stacks) {
         int index = 0;
         for (Integer stack : stacks) {
@@ -61,7 +72,18 @@ public class Inventory implements Iterable<ItemStack>, Serializable {
         return null;
     }
 
+    /**
+     * Adds the specified item to the inventory if possible.
+     * @param item the item to add, not {@code null}
+     * @return {@code true} if there was space to add the item successfully, else {@code false}
+     * @throws NullPointerException If {@code item} refers to {@code null}.
+     * @throws IllegalStateException If adding an item was attempted while this inventory is locked.
+     */
     public boolean addItem(final Item item) {
+        Objects.requireNonNull(item);
+        if (isLocked()) {
+            throw new IllegalStateException("Inventory is currently locked!");
+        }
         List<Integer> stacks = items.get(item);
         // first item of kind in inventory
         if (stacks == null) {
@@ -90,15 +112,36 @@ public class Inventory implements Iterable<ItemStack>, Serializable {
     }
 
     /**
-     * Removes one of the specified item from the inventory.
-     * @param item the item to remove
+     * Adds all the item stacks to this inventory if possible.
+     * @param stacks the stacks to add
+     * @return {@code true} if all items of all stacks have been added successfully, else {@code false}
+     * @throws NullPointerException If {@code stacks} or any of its elements refers to {@code null}
+     * @throws IllegalStateException If adding items was attempted while this inventory is locked.
+     */
+    public boolean addAll(final Iterable<ItemStack> stacks) {
+        boolean addedAll = true;
+        for (ItemStack stack : stacks) {
+            for (Item item : stack) {
+                addedAll &= addItem(item);
+            }
+        }
+        return addedAll;
+    }
+
+    /**
+     * Removes one of the specified item from the inventory if possible.
+     * @param item The item to remove. {@code null} means the method will return immediately without changing the inventory.
      * @param stackIndex From which stack to remove the item. Can be {@code null},
      *                   in that case the first non-full stack or (if not existent) the last full stack is chosen.
      * @return {@code true} if the item could be removed. {@code false} if not, especially because of an invalid stack index
      * or because the item wasn't in the inventory to begin with.
+     * @throws IllegalStateException If removing an item was attempted while this inventory is locked.
      */
     public boolean removeItem(final Item item, Integer stackIndex) {
-        if (stackIndex != null && stackIndex < 0) {
+        if (isLocked()) {
+            throw new IllegalStateException("Inventory is currently locked!");
+        }
+        if (item == null || (stackIndex != null && stackIndex < 0)) {
             return false;
         }
         final List<Integer> stacks = items.get(item);
@@ -130,13 +173,29 @@ public class Inventory implements Iterable<ItemStack>, Serializable {
     }
 
     /**
+     * Removes all the item stacks to this inventory if possible.
+     * @param stacks the stacks to remove
+     * @return {@code true} if all items of all stacks have been removed successfully, else {@code false}
+     * @throws NullPointerException If {@code stacks} or any of its elements refers to {@code null}
+     * @throws IllegalStateException If removing items was attempted while this inventory is locked.
+     */
+    public boolean removeAll(Iterable<ItemStack> stacks) {
+        boolean removedAll = true;
+        for (ItemStack stack : stacks) {
+            for (Item item : stack) {
+                removedAll &= removeItem(item, null);
+            }
+        }
+        return removedAll;
+    }
+
+    /**
      * Returns an unmodifiable view of the items in this inventory.
      * @return an unmodifiable view, may be empty but not {@code null}
      * @implNote the generated view is never cached
      */
     public List<ItemStack> getItemView() {
-        final Map<Item, List<Integer>> modifiableView = new HashMap<>(items);
-        return CollectionUtil.getAlphabeticalOrder(modifiableView).stream()
+        return CollectionUtil.getAlphabeticalOrder(items).stream()
                 .flatMap(entry -> entry.getValue().stream().map(amount -> new ItemStack(entry.getKey(), amount)))
                 .toList();
     }
@@ -153,19 +212,40 @@ public class Inventory implements Iterable<ItemStack>, Serializable {
         return getItemView().iterator();
     }
 
-    public int countAll(Item item) {
+    public int countAll(final Item item) {
         return CollectionUtil.countAll(items, item);
     }
 
-    public int countAll(String itemName) {
+    public int countAll(final String itemName) {
         return countAll(CollectionUtil.getByName(Item.REGISTRY, itemName));
     }
 
-    public int countAll(Class<? extends Item> keyClass) {
+    public int countAll(final Class<? extends Item> keyClass) {
         return items.entrySet().stream()
                 .filter(entry -> keyClass.isInstance(entry.getKey()))
                 .mapToInt(entry -> entry.getValue().size())
                 .sum();
+    }
+
+    public boolean contains(final Inventory other) {
+        for (Item item : other.items.keySet()) {
+            if (countAll(item) < other.countAll(item)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Inventory that)) return false;
+        return inventoryCapacity == that.inventoryCapacity && stackCapacity == that.stackCapacity && items.equals(that.items);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(items, inventoryCapacity, stackCapacity);
     }
 
     @Override

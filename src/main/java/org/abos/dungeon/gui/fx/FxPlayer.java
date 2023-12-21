@@ -2,6 +2,8 @@ package org.abos.dungeon.gui.fx;
 
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
+import org.abos.dungeon.core.crafting.CraftingOutput;
+import org.abos.dungeon.core.entity.Item;
 import org.abos.dungeon.core.reward.Reward;
 import org.abos.dungeon.core.task.Information;
 import org.abos.dungeon.core.Inventory;
@@ -60,13 +62,31 @@ public class FxPlayer extends Player {
     }
 
     @Override
-    public void displayInventory() {
+    public void displayInventory(final Inventory inventory) {
         // TODO implement
         throw new UnsupportedOperationException("Not yet implemented!");
     }
 
     @Override
     public void displayMenagerie() {
+        // TODO implement
+        throw new UnsupportedOperationException("Not yet implemented!");
+    }
+
+    @Override
+    protected void displayCraftingIngredients() {
+        // TODO implement
+        throw new UnsupportedOperationException("Not yet implemented!");
+    }
+
+    @Override
+    protected void displayCraftingResult(final CraftingOutput output) {
+        // TODO implement
+        throw new UnsupportedOperationException("Not yet implemented!");
+    }
+
+    @Override
+    protected Item selectItem(final String msg) {
         // TODO implement
         throw new UnsupportedOperationException("Not yet implemented!");
     }

@@ -1,7 +1,9 @@
 package org.abos.dungeon.cmd;
 
+import org.abos.common.CollectionUtil;
 import org.abos.dungeon.core.*;
-import org.abos.dungeon.core.entity.CraftingRecipe;
+import org.abos.dungeon.core.crafting.Crafting;
+import org.abos.dungeon.core.crafting.CraftingOutput;
 import org.abos.dungeon.core.entity.Item;
 import org.abos.dungeon.core.entity.LivingEntity;
 import org.abos.dungeon.core.reward.DefaultRewardFactory;
@@ -79,18 +81,27 @@ public class CmdPlayer extends Player {
         }
     }
 
+    private String getInputAfterText() {
+        System.out.print(' ');
+        return scanner.nextLine();
+    }
+
+    private String displayText(final String text, final boolean requireConfirmation) {
+        System.out.print(text);
+        if (requireConfirmation) {
+            return getInputAfterText();
+        }
+        return null;
+    }
+
     @Override
     public void displayInformation(Information information) {
-        System.out.print(information.getText());
-        System.out.print(' ');
-        scanner.nextLine();
+        displayText(information.getText(), true);
     }
 
     @Override
     public boolean displayQuestion(final Question question) {
-        System.out.print(question.getQuestion());
-        System.out.print(' ');
-        String playerAnswer = scanner.nextLine();
+        String playerAnswer = displayText(question.getQuestion(), true);
         return playerAnswer.equals(question.getAnswer());
     }
 
@@ -102,12 +113,10 @@ public class CmdPlayer extends Player {
         else {
             System.out.printf(Reward.PREFORMATTED_REWARD_WITH_LOSS_MSG, reward.entity().getName(), reward.amount(), lostAmount);
         }
-        System.out.print(' ');
-        scanner.nextLine();
+        getInputAfterText();
     }
 
-    @Override
-    public void displayInventory() {
+    private void internalDisplayInventory(final Inventory inventory) {
         if (inventory.isEmpty()) {
             System.out.print("Inventory is empty!");
         }
@@ -117,8 +126,12 @@ public class CmdPlayer extends Player {
                     .map(s -> String.format(preformatted, s.item().getName(), s.amount()))
                     .collect(Collectors.joining("%n")));
         }
-        System.out.print(' ');
-        scanner.nextLine();
+    }
+
+    @Override
+    public void displayInventory(final Inventory inventory) {
+        internalDisplayInventory(inventory);
+        getInputAfterText();
     }
 
     @Override
@@ -132,8 +145,25 @@ public class CmdPlayer extends Player {
                     .map(c -> String.format(preformatted, c.getName(), c.getCurrentHealthPoints(), c.getMaxHealthPoints(), c.getDescription()))
                     .collect(Collectors.joining("%n")));
         }
-        System.out.print(' ');
-        scanner.nextLine();
+        getInputAfterText();
+    }
+
+    @Override
+    public void displayCraftingIngredients() {
+        internalDisplayInventory(inventory);
+        System.out.println();
+    }
+
+    @Override
+    protected void displayCraftingResult(final CraftingOutput output) {
+        System.out.println("You crafted:");
+        internalDisplayInventory(output);
+        getInputAfterText();
+    }
+
+    @Override
+    protected Item selectItem(final String msg) {
+        return CollectionUtil.getByName(Item.REGISTRY, displayText(msg, true));
     }
 
     public static void main(String[] args) throws IOException {
@@ -141,26 +171,36 @@ public class CmdPlayer extends Player {
         final Random random = new Random(0);
         Item.init();
         LivingEntity.init();
-        CraftingRecipe.init();
+        Crafting.init();
         final Dungeon dungeon;
         final Player player;
-        try (final DataInputStream dis = new DataInputStream(new FileInputStream(saveFilePath))) {
-            dungeon = Dungeon.readObject(dis, random, new DefaultTaskFactory(random), new DefaultRewardFactory(random));
-            player = Player.readObject(dis, dungeon, CmdPlayer::new);
+        boolean testGame = false;
+        if (testGame) {
+            try (final DataInputStream dis = new DataInputStream(new FileInputStream(saveFilePath))) {
+                dungeon = Dungeon.readObject(dis, random, new DefaultTaskFactory(random), new DefaultRewardFactory(random));
+                player = Player.readObject(dis, dungeon, CmdPlayer::new);
 //            dungeon = new Dungeon(random, new DefaultTaskFactory(random), new DefaultRewardFactory(random));
 //            player = new CmdPlayer(dungeon.getStartRoom(), new Inventory(Inventory.DEFAULT_INVENTORY_CAPACITY, Inventory.DEFAULT_STACK_CAPACITY));
-        }
-        while (player.getCurrentRoom() != null) {
-            player.enterNextRoom();
-            try (final DataOutputStream dos = new DataOutputStream(new FileOutputStream(saveFilePath))) {
-                dungeon.writeObject(dos);
-                player.writeObject(dos);
             }
+            while (player.getCurrentRoom() != null) {
+                player.enterNextRoom();
+                try (final DataOutputStream dos = new DataOutputStream(new FileOutputStream(saveFilePath))) {
+                    dungeon.writeObject(dos);
+                    player.writeObject(dos);
+                }
+            }
+            final int tc = player.getClearedTaskCount();
+            final int ms = player.getMenagerieSize();
+            System.out.printf("%d task%s cleared, %d pet%s collected, highest room: %d%n", tc, tc == 1 ? "" : "s", ms, ms == 1 ? "" : "s", player.getHighestRoomNumber());
+            player.displayMenagerie();
+            player.displayInventory(player.getInventory());
         }
-        final int tc = player.getClearedTaskCount();
-        final int ms = player.getMenagerieSize();
-        System.out.printf("%d task%s cleared, %d pet%s collected, highest room: %d%n", tc, tc == 1 ? "" : "s", ms, ms == 1 ? "" : "s", player.getHighestRoomNumber());
-        player.displayMenagerie();
-        player.displayInventory();
+        else {
+            dungeon = new Dungeon(random, new DefaultTaskFactory(random), new DefaultRewardFactory(random));
+            player = new CmdPlayer(dungeon.getStartRoom(), new Inventory(Inventory.DEFAULT_INVENTORY_CAPACITY, Inventory.DEFAULT_STACK_CAPACITY));
+            player.getInventory().addItem(CollectionUtil.getByName(Item.REGISTRY, "Raspberry"));
+            player.getInventory().addItem(CollectionUtil.getByName(Item.REGISTRY, "Stick"));
+            player.craft();
+        }
     }
 }

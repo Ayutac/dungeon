@@ -6,7 +6,7 @@ import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import org.abos.dungeon.core.Dungeon;
 import org.abos.dungeon.core.Inventory;
-import org.abos.dungeon.core.entity.CraftingRecipe;
+import org.abos.dungeon.core.crafting.Crafting;
 import org.abos.dungeon.core.entity.LivingEntity;
 import org.abos.dungeon.core.reward.DefaultRewardFactory;
 import org.abos.dungeon.core.task.DefaultTaskFactory;
@@ -24,7 +24,7 @@ public class FxMenu extends Application {
         final Random random = new Random(0);
         Item.init();
         LivingEntity.init();
-        CraftingRecipe.init();
+        Crafting.init();
         final Dungeon dungeon = new Dungeon(random, new DefaultTaskFactory(random), new DefaultRewardFactory(random));
         final FxPlayer player = new FxPlayer(dungeon.getStartRoom(), new Inventory(Inventory.DEFAULT_INVENTORY_CAPACITY, Inventory.DEFAULT_STACK_CAPACITY));
         while (player.getCurrentRoom() != null) {
