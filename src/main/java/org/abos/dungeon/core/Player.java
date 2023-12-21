@@ -45,7 +45,7 @@ public abstract class Player implements Serializable {
     /**
      * A set of all creatures the {@link Player} collected.
      */
-    protected final Set<Creature> menagerie = new LinkedHashSet<>();
+    protected final List<Creature> menagerie = new LinkedList<>();
 
     protected final Inventory inventory;
 
