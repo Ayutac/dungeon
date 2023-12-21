@@ -170,7 +170,7 @@ public abstract class Player implements Serializable {
         }
         final CraftingOutput output = Crafting.RECIPES.get(input);
         if (output == null) {
-            // TODO display crafting diss
+            displayInformation(new Information(Crafting.getRandomDissLine(new Random())));
             return;
         }
         if (!inventory.removeAll(input)) {
@@ -178,7 +178,7 @@ public abstract class Player implements Serializable {
         }
         displayCraftingResult(output);
         if (!inventory.addAll(output)) {
-            // TODO notify player part of output has been lost
+            displayInformation(new Information("Some recipe outputs were lost due to full inventory!"));
         }
     }
 
