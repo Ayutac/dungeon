@@ -12,12 +12,28 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
+/**
+ * Central crafting class. Call {@link #init()} before using crafting stuff.
+ *
+ * @see #RECIPES
+ * @see CraftingInput
+ * @see CraftingOutput
+ */
 public final class Crafting {
 
-    public static final String LIST_FILE_NAME = "craftingRecipeList.csv";
+    /**
+     * Name of the file containing the recipes.
+     */
+    private static final String LIST_FILE_NAME = "craftingRecipeList.csv";
 
-    public static final String DISS_LIST_FILE_NAME = "craftingDissList.csv";
+    /**
+     * Name of the file containing the crafting disses.
+     */
+    private static final String DISS_LIST_FILE_NAME = "craftingDissList.csv";
 
+    /**
+     * All available crafting recipes.
+     */
     public static final Map<CraftingInput, CraftingOutput> RECIPES = new HashMap<>();
 
     /**
@@ -29,6 +45,10 @@ public final class Crafting {
         /* No instantiation. */
     }
 
+    /**
+     * Initializes the recipes and crafting disses.
+     * @throws IllegalStateException If any recipe is in the wrong format.
+     */
     public static void init() {
         final String iseErrMsg = "Line with wrong number of arguments detected: ";
         final String preformattedIoErrMsg = "Reading the file %s failed!%n";
@@ -57,8 +77,12 @@ public final class Crafting {
         }
     }
 
+    /**
+     * Returns a random diss line.
+     * @param random a {@link Random} instance
+     * @return a diss line, not {@code null}
+     */
     public static String getRandomDissLine(final Random random) {
         return DISS_LINES.get(random.nextInt(DISS_LINES.size()));
     }
-
 }

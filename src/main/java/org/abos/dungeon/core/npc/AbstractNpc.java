@@ -35,6 +35,7 @@ public abstract class AbstractNpc extends Player {
 
     /**
      * Returns the {@link Random} instance of this NPC.
+     * @return a random instance, not {@code null}
      */
     public Random random() {
         return random;

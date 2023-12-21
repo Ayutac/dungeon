@@ -22,10 +22,23 @@ import java.util.Scanner;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
+/**
+ * A command line implementation of the {@link Player}.
+ */
 public class CmdPlayer extends Player {
 
-    final Scanner scanner = new Scanner(System.in);
+    /**
+     * The CMD input.
+     */
+    protected final Scanner scanner = new Scanner(System.in);
 
+    /**
+     * Creates a new {@link CmdPlayer} instance.
+     * @param startRoom The room the player starts in. Can be different from {@link Dungeon#getStartRoom()},
+     *                  but shouldn't be the exit room. Not {@code null}.
+     * @param inventory the player's inventory, not {@code null}
+     * @throws NullPointerException If {@code startRoom} or {@code inventory} refers to {@code null}.
+     */
     public CmdPlayer(final Room startRoom, final Inventory inventory) {
         super(startRoom, inventory);
     }
@@ -67,6 +80,10 @@ public class CmdPlayer extends Player {
         }
     }
 
+    /**
+     * Prompts the player to leave the dungeon.
+     * @return {@code true} if the player wants to leave the dungeon, else {@code false}
+     */
     protected boolean leaveDungeon() {
         String answer;
         System.out.print("Really leave the dungeon? (Y/N) ");
@@ -174,13 +191,13 @@ public class CmdPlayer extends Player {
         Crafting.init();
         final Dungeon dungeon;
         final Player player;
-        boolean testGame = false;
+        boolean testGame = true;
         if (testGame) {
             try (final DataInputStream dis = new DataInputStream(new FileInputStream(saveFilePath))) {
                 dungeon = Dungeon.readObject(dis, random, new DefaultTaskFactory(random), new DefaultRewardFactory(random));
                 player = Player.readObject(dis, dungeon, CmdPlayer::new);
-//            dungeon = new Dungeon(random, new DefaultTaskFactory(random), new DefaultRewardFactory(random));
-//            player = new CmdPlayer(dungeon.getStartRoom(), new Inventory(Inventory.DEFAULT_INVENTORY_CAPACITY, Inventory.DEFAULT_STACK_CAPACITY));
+//                dungeon = new Dungeon(random, new DefaultTaskFactory(random), new DefaultRewardFactory(random));
+//                player = new CmdPlayer(dungeon.getStartRoom(), new Inventory(Inventory.DEFAULT_INVENTORY_CAPACITY, Inventory.DEFAULT_STACK_CAPACITY));
             }
             while (player.getCurrentRoom() != null) {
                 player.enterNextRoom();

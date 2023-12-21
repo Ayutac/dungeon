@@ -2,12 +2,27 @@ package org.abos.dungeon.core.entity;
 
 import java.util.Objects;
 
+/**
+ * Abstract implementation of {@link Entity}.
+ */
 public abstract class AbstractEntity implements Entity {
 
-    protected String name;
+    /**
+     * @see #getName()
+     */
+    protected final String name;
 
-    protected String description;
+    /**
+     * @see #getDescription()
+     */
+    protected final String description;
 
+    /**
+     * Creates a new {@link AbstractEntity} instance.
+     * @param name the name of this entity
+     * @param description the description of this entity
+     * @throws NullPointerException If any parameter refers to {@code null}.
+     */
     public AbstractEntity(final String name, final String description) {
         this.name = Objects.requireNonNull(name);
         this.description = Objects.requireNonNull(description);

@@ -8,16 +8,33 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * A {@link LivingEntity} implementation based on {@link AbstractEntity}.
+ */
 public class Creature extends AbstractEntity implements LivingEntity, Serializable {
 
     private static List<Creature> templates;
 
+    /**
+     * Name of the file containing the different creatures.
+     */
     public static final String LIST_FILE_NAME = "creatureList.csv";
 
+    /**
+     * @see #getMaxHealthPoints()
+     */
     protected final int maxHp;
 
+    /**
+     * @see #getCurrentHealthPoints()
+     */
     protected int currentHp;
 
+    /**
+     * Copies a creature from a given template.
+     * @param original the template, not {@code null}
+     * @throws NullPointerException If {@code original} refers to {@code null}.
+     */
     public Creature(Creature original) {
         this(original.name, original.description, original.maxHp);
         this.currentHp = original.currentHp;

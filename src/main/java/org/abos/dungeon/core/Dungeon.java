@@ -36,17 +36,17 @@ public class Dungeon implements Serializable {
     /**
      * @see #random()
      */
-    protected Random random;
+    protected final Random random;
 
     /**
      * @see #getTaskFactory()
      */
-    protected TaskFactory taskFactory;
+    protected final TaskFactory taskFactory;
 
     /**
      * @see #getRewardFactory()
      */
-    protected RewardFactory rewardFactory;
+    protected final RewardFactory rewardFactory;
 
     /**
      * Creates a new dungeon with the specified parameters.
