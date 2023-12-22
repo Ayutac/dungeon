@@ -1,6 +1,7 @@
 package org.abos.dungeon.core.task;
 
 import org.abos.common.ErrorUtil;
+import org.abos.common.Randomizer;
 
 import java.util.Objects;
 import java.util.Random;
@@ -8,7 +9,7 @@ import java.util.Random;
 /**
  * Factory for {@link Task}s.
  */
-public class DefaultTaskFactory implements TaskFactory {
+public class DefaultTaskFactory implements TaskFactory, Randomizer {
 
     /**
      * @see #random()

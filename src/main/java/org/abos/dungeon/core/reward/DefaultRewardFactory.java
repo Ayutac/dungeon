@@ -2,6 +2,7 @@ package org.abos.dungeon.core.reward;
 
 import org.abos.common.CollectionUtil;
 import org.abos.common.MathUtil;
+import org.abos.common.Randomizer;
 import org.abos.dungeon.core.Player;
 import org.abos.dungeon.core.entity.Creature;
 import org.abos.dungeon.core.entity.Item;
@@ -10,14 +11,18 @@ import org.abos.dungeon.core.entity.PermanentUpgrade;
 import java.util.Objects;
 import java.util.Random;
 
-public class DefaultRewardFactory implements RewardFactory {
+public class DefaultRewardFactory implements RewardFactory, Randomizer {
 
+    /**
+     * @see #random()
+     */
     protected final Random random;
 
     public DefaultRewardFactory(final Random random) {
         this.random = Objects.requireNonNull(random);
     }
 
+    @Override
     public Random random() {
         return random;
     }

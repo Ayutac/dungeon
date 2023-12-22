@@ -1,5 +1,6 @@
 package org.abos.dungeon.core.npc;
 
+import org.abos.common.Randomizer;
 import org.abos.dungeon.core.Dungeon;
 import org.abos.dungeon.core.Inventory;
 import org.abos.dungeon.core.Player;
@@ -15,7 +16,7 @@ import java.util.Random;
 /**
  * NPC template of a {@link Player}.
  */
-public abstract class AbstractNpc extends Player {
+public abstract class AbstractNpc extends Player implements Randomizer {
 
     protected final Random random;
 
@@ -33,10 +34,7 @@ public abstract class AbstractNpc extends Player {
         this.random = Objects.requireNonNull(random);
     }
 
-    /**
-     * Returns the {@link Random} instance of this NPC.
-     * @return a random instance, not {@code null}
-     */
+    @Override
     public Random random() {
         return random;
     }

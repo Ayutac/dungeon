@@ -1,5 +1,6 @@
 package org.abos.dungeon.core;
 
+import org.abos.common.Randomizer;
 import org.abos.common.Serializable;
 import org.abos.dungeon.core.reward.RewardFactory;
 import org.abos.dungeon.core.task.TaskFactory;
@@ -16,7 +17,7 @@ import java.util.Random;
 /**
  * The dungeon the {@link Player} can explore {@link Room Rooms} in.
  */
-public class Dungeon implements Serializable {
+public class Dungeon implements Randomizer, Serializable {
 
     /**
      * The end of the dungeon.
@@ -76,15 +77,14 @@ public class Dungeon implements Serializable {
         this(random, taskFactory, rewardFactory, true);
     }
 
-    /**
-     * Returns the {@link Random} instance of this dungeon.
-     */
+    @Override
     public Random random() {
         return random;
     }
 
     /**
      * Returns the {@link TaskFactory} instance of this dungeon.
+     * @return the task factory, not {@code null}
      */
     public TaskFactory getTaskFactory() {
         return taskFactory;
@@ -92,6 +92,7 @@ public class Dungeon implements Serializable {
 
     /**
      * Returns the {@link RewardFactory} instance of this dungeon.
+     * @return the reward factory, not {@code null}
      */
     public RewardFactory getRewardFactory() {
         return rewardFactory;
@@ -99,6 +100,7 @@ public class Dungeon implements Serializable {
 
     /**
      * Returns the start room of this dungeon, which should be right in front of the exit.
+     * @return the start room, not {@code null}
      */
     public Room getStartRoom() {
         return startRoom;
