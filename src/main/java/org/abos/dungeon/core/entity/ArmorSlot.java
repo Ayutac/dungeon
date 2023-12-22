@@ -3,7 +3,7 @@ package org.abos.dungeon.core.entity;
 import org.abos.common.Named;
 import org.abos.common.StringUtil;
 
-public enum ArmorSlots implements Named {
+public enum ArmorSlot implements Named {
 
     HEAD,
     TORSO,
@@ -13,7 +13,7 @@ public enum ArmorSlots implements Named {
 
     private final String name;
 
-    ArmorSlots() {
+    ArmorSlot() {
         name = StringUtil.toCapitalized(name());
     }
 

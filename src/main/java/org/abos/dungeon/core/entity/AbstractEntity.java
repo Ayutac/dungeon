@@ -19,8 +19,8 @@ public abstract class AbstractEntity implements Entity {
 
     /**
      * Creates a new {@link AbstractEntity} instance.
-     * @param name the name of this entity
-     * @param description the description of this entity
+     * @param name the name of this entity, not {@code null}
+     * @param description the description of this entity, not {@code null}
      * @throws NullPointerException If any parameter refers to {@code null}.
      */
     public AbstractEntity(final String name, final String description) {
