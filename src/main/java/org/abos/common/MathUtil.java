@@ -116,6 +116,19 @@ public final class MathUtil {
         }
         return result;
     }
+
+    /**
+     * Returns the coefficients a,b,c from ax²+bx+c, given via A*(x-B)*(x-C).
+     * @param factor the scalar factor
+     * @param root1 one root of the quadratic polynomial
+     * @param root2 the other root of the quadratic polynomial
+     * @return The coefficients of the quadratic polynomial, starting with the leading coefficient.
+     * The returned array always has length 3.
+     * @throws ArithmeticException If the coefficients couldn't be calculated because of overflow.
+     */
+    public static int[] quadraticCoefficients(final int factor, final int root1, final int root2) {
+        return new int[] {factor, -Math.addExact(root1, root2), Math.multiplyExact(root1, root2)};
+    }
     
     private static void cacheIfPrime(final int n) {
         final double sqrt = Math.sqrt(n);
