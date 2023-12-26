@@ -43,9 +43,15 @@ public class Question implements Task {
         CONSTANTS.put("the Euler-Mascheroni constant γ", 0.57721566490153286060);
     }
 
+    /**
+     * Creates a new {@link Question} instance.
+     * @param question the question to ask, not {@code null}
+     * @param answer the answer to the question, not {@code null}
+     * @throws NullPointerException If any parameter refers to {@code null}.
+     */
     public Question(final String question, final String answer) {
         this.question = Objects.requireNonNull(question);
-        this.answer = Objects.requireNonNull(answer).toLowerCase();
+        this.answer = answer.toLowerCase();
     }
 
     /**
@@ -290,7 +296,7 @@ public class Question implements Task {
      * @return a new and randomized {@link Question} instance about the digit of a constant
      */
     public static Question getDigitQuestion(final Random random, final int roomNumber) {
-        final int position = 1 + random.nextInt(getDigitUpperLimit(roomNumber));
+        final int position = Math.max(1,random.nextInt(getDigitUpperLimit(roomNumber)));
         final Map.Entry<String, Double> constant = CollectionUtil.getRandomEntry(CONSTANTS, random);
         final int factor = (int)Math.round(Math.pow(10, position-1));
         final int digit = (int)Math.floor(constant.getValue()*factor) % 10;
