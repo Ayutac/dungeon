@@ -336,6 +336,7 @@ public class Question implements Task {
             }
             catch (ArithmeticException ex) {/* Ignore and retry. */}
         }
+        final boolean bigger = random.nextBoolean();
         final StringBuilder polynomial = new StringBuilder();
         if (coefficients[0] == -1) {
             polynomial.append('-');
@@ -357,7 +358,7 @@ public class Question implements Task {
             }
             polynomial.append(coefficients[2]);
         }
-        return new Question(String.format("What is the bigger root of %s?", polynomial), Integer.toString(Math.max(root1, root2)));
+        return new Question(String.format("What is the %s root of %s?", bigger ? "bigger" : "smaller", polynomial), Integer.toString(bigger ? Math.max(root1, root2) : Math.min(root1, root2)));
     }
 
     /**
