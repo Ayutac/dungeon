@@ -36,13 +36,14 @@ public class DefaultTaskFactory implements TaskFactory, Randomizer {
      */
     @Override
     public Task apply(Integer roomNumber) {
-        return switch (random().nextInt(6)) {
+        return switch (random().nextInt(7)) {
             case 0 -> Question.getSimpleArithmQuestion(random(), roomNumber);
             case 1 -> Question.getSquareQuestion(random(), roomNumber);
             case 2 -> Question.getSquareRootQuestion(random(), roomNumber);
-            case 3 -> Question.getFactorialQuestion(random(), roomNumber);
-            case 4 -> Question.getDigitQuestion(random(), roomNumber);
-            case 5 -> Information.getRandomInformation(random());
+            case 3 -> Question.getGcdQuestion(random(), roomNumber);
+            case 4 -> Question.getFactorialQuestion(random(), roomNumber);
+            case 5 -> Question.getDigitQuestion(random(), roomNumber);
+            case 6 -> Information.getRandomInformation(random());
             default -> ErrorUtil.unreachableCode();
         };
     }

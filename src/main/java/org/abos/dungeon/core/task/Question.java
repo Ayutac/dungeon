@@ -279,6 +279,24 @@ public class Question implements Task {
     }
 
     /**
+     * Creates a new {@link Question} instance about the greatest common divisor with randomly generated content.
+     * @param random a {@link Random} instance
+     * @param roomNumber the room number this question is for, for difficulty adjustments
+     * @return a new and randomized {@link Question} instance about the greatest common divisor
+     */
+    public static Question getGcdQuestion(final Random random, final int roomNumber) {
+        int a = random.nextInt(getSummandUpperLimit(roomNumber));
+        if (random.nextBoolean()) {
+            a = -a;
+        }
+        int b = random.nextInt(getSummandUpperLimit(roomNumber));
+        if (random.nextBoolean()) {
+            b = -b;
+        }
+        return new Question(String.format("What is gcd(%d,%d)?", a, b), Integer.toString(MathUtil.gcd(a,b)));
+    }
+
+    /**
      * Creates a new {@link Question} instance about the factorial with randomly generated content.
      * @param random a {@link Random} instance
      * @param roomNumber the room number this question is for, for difficulty adjustments
