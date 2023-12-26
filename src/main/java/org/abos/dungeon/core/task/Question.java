@@ -56,6 +56,7 @@ public class Question implements Task {
 
     /**
      * Returns the question string as to be displayed for the user.
+     * @return the question, not {@code null}
      */
     public String getQuestion() {
         return question;
@@ -63,6 +64,7 @@ public class Question implements Task {
 
     /**
      * Returns the answer string, guaranteed to be lowercase.
+     * @return the answer in lowercase, not {@code null}
      */
     public String getAnswer() {
         return answer;
@@ -305,6 +307,57 @@ public class Question implements Task {
     public static Question getFactorialQuestion(final Random random, final int roomNumber) {
         final int a = random.nextInt(getFactorialUpperLimit(roomNumber));
         return new Question(String.format("What is %d!?", a), Integer.toString(MathUtil.factorial(a)));
+    }
+
+    /**
+     * Creates a new {@link Question} instance about the root of a randomly generated quadratic polynomial.
+     * @param random a {@link Random} instance
+     * @param roomNumber the room number this question is for, for difficulty adjustments
+     * @return a new and randomized {@link Question} instance about the roots of a quadratic polynomial
+     */
+    public static Question getQuadraticRootQuestion(final Random random, final int roomNumber) {
+        int factor = Math.max(1,random.nextInt(getDigitUpperLimit(roomNumber)));
+        if (random.nextBoolean()) {
+            factor = -factor;
+        }
+        int root1 = 0, root2 = 0;
+        int[] coefficients = null;
+        while (coefficients == null) {
+            try {
+                root1 = random.nextInt(getFactorUpperLimit(roomNumber));
+                if (random.nextBoolean()) {
+                    root1 = -root1;
+                }
+                root2 = random.nextInt(getFactorUpperLimit(roomNumber));
+                if (random.nextBoolean()) {
+                    root2 = -root2;
+                }
+                coefficients = MathUtil.quadraticCoefficients(factor, root1, root2);
+            }
+            catch (ArithmeticException ex) {/* Ignore and retry. */}
+        }
+        final StringBuilder polynomial = new StringBuilder();
+        if (coefficients[0] == -1) {
+            polynomial.append('-');
+        }
+        else if (coefficients[0] != 1) {
+            polynomial.append(coefficients[0]);
+        }
+        polynomial.append("x²");
+        if (coefficients[1] != 0) {
+            if (coefficients[1] > 0) {
+                polynomial.append('+');
+            }
+            polynomial.append(coefficients[1]);
+            polynomial.append('x');
+        }
+        if (coefficients[2] != 0) {
+            if (coefficients[2] > 0) {
+                polynomial.append('+');
+            }
+            polynomial.append(coefficients[2]);
+        }
+        return new Question(String.format("What is the bigger root of %s?", polynomial), Integer.toString(Math.max(root1, root2)));
     }
 
     /**
