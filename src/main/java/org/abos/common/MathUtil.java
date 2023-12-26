@@ -127,7 +127,7 @@ public final class MathUtil {
      * @throws ArithmeticException If the coefficients couldn't be calculated because of overflow.
      */
     public static int[] quadraticCoefficients(final int factor, final int root1, final int root2) {
-        return new int[] {factor, -Math.addExact(root1, root2), Math.multiplyExact(root1, root2)};
+        return new int[] {factor, Math.multiplyExact(-factor, Math.addExact(root1, root2)), Math.multiplyExact(factor, Math.multiplyExact(root1, root2))};
     }
     
     private static void cacheIfPrime(final int n) {
