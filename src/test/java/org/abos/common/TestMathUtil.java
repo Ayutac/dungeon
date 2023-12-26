@@ -9,6 +9,22 @@ import org.junit.jupiter.api.Test;
 public class TestMathUtil {
 
     /**
+     * Tests {@link MathUtil#gcd(int, int)}.
+     */
+    @Test
+    public void testGcd() {
+        Assertions.assertEquals(Integer.MAX_VALUE, MathUtil.gcd(0, 0));
+        Assertions.assertEquals(12, MathUtil.gcd(12, 0));
+        Assertions.assertEquals(10, MathUtil.gcd(0, -10));
+        Assertions.assertEquals(1, MathUtil.gcd(7, 13));
+        Assertions.assertEquals(17, MathUtil.gcd(17, 17));
+        Assertions.assertEquals(1, MathUtil.gcd(-21, 4));
+        Assertions.assertEquals(2, MathUtil.gcd(30, 8));
+        Assertions.assertEquals(12, MathUtil.gcd(60, 12));
+        Assertions.assertEquals(4, MathUtil.gcd(16, -60));
+    }
+
+    /**
      * Tests {@link MathUtil#factorial(int)}.
      */
     @Test

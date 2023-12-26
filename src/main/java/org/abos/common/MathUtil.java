@@ -29,6 +29,73 @@ public final class MathUtil {
         CACHED_FIBONACCI.add(1);
         biggestNumberCheckedForFibonacci = 1;
     }
+
+    /**
+     * Unchecked recursive greatest common divisor algorithm.
+     * @param a a positive number greater than b (unchecked)
+     * @param b a positive number smaller than a (unchecked)
+     * @return the greatest common divisor of the two numbers
+     * @implNote Uses Euclid's algorithm.
+     */
+    private static int innerGcd(final int a, final int b) {
+        if (a % b == 0) {
+            return b;
+        }
+        return innerGcd(b, a % b);
+    }
+
+    /**
+     * Greatest common divisor algorithm.
+     * @param a an integer
+     * @param b another integer
+     * @return The greatest common divisor of the two numbers, always a positive number.
+     * @implSpec Special case: {@code gcd(0, 0) == Integer.MAX_VALUE}.
+     * @implNote Uses Euclid's algorithm.
+     */
+    public static int gcd(final int a, final int b) {
+        if (a == 0 && b == 0) {
+            return Integer.MAX_VALUE;
+        }
+        if (a == 0) {
+            return Math.abs(b);
+        }
+        if (b == 0) {
+            return Math.abs(a);
+        }
+        if (a == b || a == -b) {
+            return Math.abs(a);
+        }
+        if (a < 0) {
+            if (b < 0) {
+                if (a < b) {
+                    return innerGcd(-a, -b);
+                }
+                else {
+                    return innerGcd(-b, -a);
+                }
+            }
+            else {
+                if (-a < b) {
+                    return innerGcd(b, -a);
+                }
+                else {
+                    return innerGcd(-a, b);
+                }
+            }
+        }
+        if (b < 0) {
+            if (a < -b) {
+                return innerGcd(-b, a);
+            }
+            else {
+                return innerGcd(a, -b);
+            }
+        }
+        if (a < b) {
+            return innerGcd(b, a);
+        }
+        return innerGcd(a, b);
+    }
     
     /**
      * Calculates the factorial of the specified number, ignoring overflow.
