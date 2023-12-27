@@ -240,7 +240,7 @@ public class Question implements Task {
     }
 
     /**
-     * Creates a new {@link Question} instance about basic arithmetic operations (+,-,*,/) with randomly generated content.
+     * Creates a new {@link Question} instance about basic arithmetic operations (+,-,*,/,mod) with randomly generated content.
      * @param random a {@link Random} instance
      * @param roomNumber the room number this question is for, for difficulty adjustments
      * @return a new and randomized {@link Question} instance about basic arithmetic operations
@@ -323,6 +323,22 @@ public class Question implements Task {
     public static Question getFactorialQuestion(final Random random, final int roomNumber) {
         final int a = random.nextInt(getFactorialUpperLimit(roomNumber));
         return new Question(String.format("What is %d!?", a), Integer.toString(MathUtil.factorial(a)));
+    }
+
+    /**
+     * Creates a new {@link Question} instance about advanced arithmetic operations (²,√,gcd,!) with randomly generated content.
+     * @param random a {@link Random} instance
+     * @param roomNumber the room number this question is for, for difficulty adjustments
+     * @return a new and randomized {@link Question} instance about advanced arithmetic operations
+     */
+    public static Question getAdvancedArithmQuestion(final Random random, final int roomNumber) {
+        return switch (random.nextInt(4)) {
+            case 0 -> getSquareQuestion(random, roomNumber);
+            case 1 -> getSquareRootQuestion(random, roomNumber);
+            case 2 -> getGcdQuestion(random, roomNumber);
+            case 3 -> getFactorialQuestion(random, roomNumber);
+            default -> ErrorUtil.unreachableCode();
+        };
     }
 
     /**
