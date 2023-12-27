@@ -225,17 +225,33 @@ public class Question implements Task {
     }
 
     /**
+     * Creates a new {@link Question} instance about mod with randomly generated content.
+     * @param random a {@link Random} instance
+     * @param roomNumber the room number this question is for, for difficulty adjustments
+     * @return a new and randomized {@link Question} instance about mod
+     */
+    public static Question getModQuestion(final Random random, final int roomNumber) {
+        final int a = random.nextInt(getSummandUpperLimit(roomNumber));
+        int b = 0;
+        while (b == 0) {
+            b = random.nextInt(getFactorUpperLimit(roomNumber));
+        }
+        return new Question(String.format("What is %d mod %d?", a, b), Integer.toString(a % b));
+    }
+
+    /**
      * Creates a new {@link Question} instance about basic arithmetic operations (+,-,*,/) with randomly generated content.
      * @param random a {@link Random} instance
      * @param roomNumber the room number this question is for, for difficulty adjustments
      * @return a new and randomized {@link Question} instance about basic arithmetic operations
      */
     public static Question getSimpleArithmQuestion(final Random random, final int roomNumber) {
-        return switch (random.nextInt(4)) {
+        return switch (random.nextInt(5)) {
             case 0 -> getAdditionQuestion(random, roomNumber);
             case 1 -> getSubtractionQuestion(random, roomNumber);
             case 2 -> getMultiplicationQuestion(random, roomNumber);
             case 3 -> getDivisionQuestion(random, roomNumber);
+            case 4 -> getModQuestion(random, roomNumber);
             default -> ErrorUtil.unreachableCode();
         };
     }
