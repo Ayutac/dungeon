@@ -115,7 +115,7 @@ public class Question implements Task {
      */
     protected static int getFactorialUpperLimit(final int roomNumber) {
         // max is 10!
-        return Math.min(getFactorUpperLimit(roomNumber), 11);
+        return Math.min(getFactorUpperLimit(roomNumber)/2, 11);
     }
 
     /**
