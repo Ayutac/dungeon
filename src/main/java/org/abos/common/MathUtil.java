@@ -31,6 +31,17 @@ public final class MathUtil {
     }
 
     /**
+     * Checks if two double values are equal for a certain precision.
+     * @param a the first double
+     * @param b the second double
+     * @param epsilon the error margin
+     * @return {@code true} if the two doubles are the same within the error margin, else {@code false}.
+     */
+    public static boolean equalsPrecision(final double a, final double b, final double epsilon) {
+        return Math.abs(a - b) < epsilon;
+    }
+
+    /**
      * Unchecked recursive greatest common divisor algorithm.
      * @param a a positive number greater than b (unchecked)
      * @param b a positive number smaller than a (unchecked)
@@ -127,7 +138,76 @@ public final class MathUtil {
      * @throws ArithmeticException If the coefficients couldn't be calculated because of overflow.
      */
     public static int[] quadraticCoefficients(final int factor, final int root1, final int root2) {
-        return new int[] {factor, Math.multiplyExact(-factor, Math.addExact(root1, root2)), Math.multiplyExact(factor, Math.multiplyExact(root1, root2))};
+        return new int[] {factor, Math.multiplyExact(Math.negateExact(factor), Math.addExact(root1, root2)), Math.multiplyExact(factor, Math.multiplyExact(root1, root2))};
+    }
+
+    /**
+     * Calculates the scalar product of the two given vectors, that is, v<sup>t</sup> * w.
+     * @param v the first vector
+     * @param w the second vector
+     * @return the scalar product of the two vectors
+     * @throws NullPointerException If any parameter refers to {@code null}.
+     * @throws ArithmeticException If the vectors are of different length or the scalar product couldn't be calculated because of overflow.
+     * @implSpec Two empty arrays return 0.
+     */
+    public static int scalarProduct(final int[] v, final int [] w) {
+        if (v.length != w.length) {
+            throw new ArithmeticException("v and w must have the same dimensions!");
+        }
+        int sum = 0;
+        for (int i = 0; i < v.length; i++) {
+            sum = Math.addExact(sum, Math.multiplyExact(v[i], w[i]));
+        }
+        return sum;
+    }
+
+    /**
+     * Checks if the given vector is the null vector.
+     * @param v the vector to check
+     * @return {@code true} if all entries of the vector are 0, otherwise {@code false}.
+     * @throws NullPointerException If {@code v} refers to {@code null}.
+     * @implSpec The empty array returns {@code true}.
+     */
+    public static boolean isNullVector(final int[] v) {
+        for (int j : v) {
+            if (j != 0) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Checks if the two given vectors are linearly dependent (within an epsilon).
+     * @param v the first vector
+     * @param w the second vector
+     * @param epsilon the allowed amount of rounding error when dividing
+     * @return {@code true} if the two vectors are linearly dependent, else {@code false}.
+     * @throws NullPointerException If any parameter refers to {@code null}.
+     * @throws ArithmeticException If the vectors are of different length.
+     * @implSpec Two one-dimensional or zero-dimensional arrays are always linearly dependent.
+     */
+    public static boolean areDependent(final int[] v, final int[] w, final double epsilon) {
+        if (v.length != w.length) {
+            throw new ArithmeticException("v and w must have the same dimensions!");
+        }
+        if (v.length == 0 || v.length == 1 || isNullVector(v) || isNullVector(w)) {
+            return true;
+        }
+        double scalar = Double.NaN;
+        for (int i = 0; i < v.length; i++) {
+            if (w[i] == 0) {
+                continue;
+            }
+            scalar = ((double)v[i]) / w[i];
+            break;
+        }
+        for (int i = 0; i < v.length; i++) {
+            if (!equalsPrecision(scalar, ((double)v[i]) / w[i], epsilon)) {
+                return false;
+            }
+        }
+        return true;
     }
     
     private static void cacheIfPrime(final int n) {
