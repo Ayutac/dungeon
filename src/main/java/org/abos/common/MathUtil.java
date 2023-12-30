@@ -129,6 +129,22 @@ public final class MathUtil {
     }
 
     /**
+     * Calculates the complex product of the two given complex numbers.
+     * @param a the real part of the first number
+     * @param b the imaginary part of the first number
+     * @param c the real part of the second number
+     * @param d the imaginary part of the second number
+     * @return A 2-dimensional array containing the real and imaginary part of the result in that order. Not {@code null}.
+     * @throws ArithmeticException If the product couldn't be calculated because of overflow.
+     */
+    public static int[] multiplyComplex(final int a, final int b, final int c, final int d) {
+        return new int[] {
+                Math.subtractExact(Math.multiplyExact(a, c), Math.multiplyExact(b, d)),
+                Math.addExact(Math.multiplyExact(a, d), Math.multiplyExact(b, c))
+        };
+    }
+
+    /**
      * Returns the coefficients a,b,c from ax²+bx+c, given via A*(x-B)*(x-C).
      * @param factor the scalar factor
      * @param root1 one root of the quadratic polynomial

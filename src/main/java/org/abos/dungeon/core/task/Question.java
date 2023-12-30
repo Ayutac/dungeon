@@ -181,12 +181,13 @@ public class Question implements Task {
      */
     public static Question getMultiplicationQuestion(final Random random, final int roomNumber) {
         int a, b;
+        final int factorUpperLimit = getFactorUpperLimit(roomNumber);
         while (true) {
-            a = random.nextInt(getFactorUpperLimit(roomNumber));
+            a = random.nextInt(factorUpperLimit);
             if (random.nextBoolean()) {
                 a = -a;
             }
-            b = random.nextInt(getFactorUpperLimit(roomNumber));
+            b = random.nextInt(factorUpperLimit);
             try {
                 //noinspection ResultOfMethodCallIgnored
                 Math.multiplyExact(a, b);
@@ -326,17 +327,54 @@ public class Question implements Task {
     }
 
     /**
+     * Creates a new {@link Question} instance about complex multiplication with randomly generated content.
+     * @param random a {@link Random} instance
+     * @param roomNumber the room number this question is for, for difficulty adjustments
+     * @return a new and randomized {@link Question} instance about complex multiplication
+     */
+    public static Question getComplexMultiplicationQuestion(final Random random, final int roomNumber) {
+        int a = 0, b = 0, c = 0, d = 0;
+        int[] result = null;
+        final int factorUpperLimit = getFactorUpperLimit(roomNumber);
+        while (result == null) {
+            a = random.nextInt(factorUpperLimit);
+            if (random.nextBoolean()) {
+                a = -a;
+            }
+            b = random.nextInt(factorUpperLimit);
+            if (random.nextBoolean()) {
+                b = -b;
+            }
+            c = random.nextInt(factorUpperLimit);
+            if (random.nextBoolean()) {
+                c = -c;
+            }
+            d = random.nextInt(factorUpperLimit);
+            if (random.nextBoolean()) {
+                d = -d;
+            }
+            try {
+                result = MathUtil.multiplyComplex(a, b, c, d);
+            }
+            catch (ArithmeticException ex) {/* Ignore and retry. */}
+        }
+        return new Question(String.format("What is (%d%s%di) * (%d%s%di)?", a, b < 0 ? "-" : "+", b, c, d < 0 ? "-" : "+", d),
+                String.format("%d%s%di", result[0], result[1] < 0 ? "-" : "+", result[1]));
+    }
+
+    /**
      * Creates a new {@link Question} instance about advanced arithmetic operations (²,√,gcd,!) with randomly generated content.
      * @param random a {@link Random} instance
      * @param roomNumber the room number this question is for, for difficulty adjustments
      * @return a new and randomized {@link Question} instance about advanced arithmetic operations
      */
     public static Question getAdvancedArithmQuestion(final Random random, final int roomNumber) {
-        return switch (random.nextInt(4)) {
+        return switch (random.nextInt(5)) {
             case 0 -> getSquareQuestion(random, roomNumber);
             case 1 -> getSquareRootQuestion(random, roomNumber);
             case 2 -> getGcdQuestion(random, roomNumber);
             case 3 -> getFactorialQuestion(random, roomNumber);
+            case 4 -> getComplexMultiplicationQuestion(random, roomNumber);
             default -> ErrorUtil.unreachableCode();
         };
     }
