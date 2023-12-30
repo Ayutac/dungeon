@@ -358,8 +358,8 @@ public class Question implements Task {
             }
             catch (ArithmeticException ex) {/* Ignore and retry. */}
         }
-        return new Question(String.format("What is (%d%s%di) * (%d%s%di)?", a, b < 0 ? "-" : "+", b, c, d < 0 ? "-" : "+", d),
-                String.format("%d%s%di", result[0], result[1] < 0 ? "-" : "+", result[1]));
+        return new Question(String.format("What is (%d%+di) * (%d%+di)?", a, b, c, d),
+                String.format("%d%+di", result[0], result[1]));
     }
 
     /**
