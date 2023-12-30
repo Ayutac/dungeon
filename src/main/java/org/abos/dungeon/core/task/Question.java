@@ -335,7 +335,7 @@ public class Question implements Task {
     public static Question getComplexMultiplicationQuestion(final Random random, final int roomNumber) {
         int a = 0, b = 0, c = 0, d = 0;
         int[] result = null;
-        final int factorUpperLimit = getFactorUpperLimit(roomNumber);
+        final int factorUpperLimit = getFactorUpperLimit(roomNumber) * 2 / 3;
         while (result == null) {
             a = random.nextInt(factorUpperLimit);
             if (random.nextBoolean()) {
