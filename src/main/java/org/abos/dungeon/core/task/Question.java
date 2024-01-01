@@ -111,6 +111,13 @@ public class Question implements Task {
     }
 
     /**
+     * Gives an upper limit for the exponent of 2 based on the specified room number
+     */
+    protected static int get2ExponentUpperLimit(final int roomNumber) {
+        return Math.min(getFactorUpperLimit(roomNumber), 63);
+    }
+
+    /**
      * Gives an upper limit for factorial arguments in generated questions based on the specified room number.
      */
     protected static int getFactorialUpperLimit(final int roomNumber) {
@@ -298,6 +305,17 @@ public class Question implements Task {
     }
 
     /**
+     * Creates a new {@link Question} instance about 2 to the power with randomly generated content.
+     * @param random a {@link Random} instance
+     * @param roomNumber the room number this question is for, for difficulty adjustments
+     * @return a new and randomized {@link Question} instance about exponentiating 2
+     */
+    public static Question get2toThePowerOfQuestion(final Random random, final int roomNumber) {
+        final int exponent = random.nextInt(get2ExponentUpperLimit(roomNumber));
+        return new Question(String.format("What is 2 to the power of %d?", exponent), Integer.toString((int)Math.round(Math.pow(2, exponent))));
+    }
+
+    /**
      * Creates a new {@link Question} instance about the greatest common divisor with randomly generated content.
      * @param random a {@link Random} instance
      * @param roomNumber the room number this question is for, for difficulty adjustments
@@ -363,18 +381,19 @@ public class Question implements Task {
     }
 
     /**
-     * Creates a new {@link Question} instance about advanced arithmetic operations (²,√,gcd,!) with randomly generated content.
+     * Creates a new {@link Question} instance about advanced arithmetic operations (²,√,2^,gcd,!,i) with randomly generated content.
      * @param random a {@link Random} instance
      * @param roomNumber the room number this question is for, for difficulty adjustments
      * @return a new and randomized {@link Question} instance about advanced arithmetic operations
      */
     public static Question getAdvancedArithmQuestion(final Random random, final int roomNumber) {
-        return switch (random.nextInt(5)) {
+        return switch (random.nextInt(6)) {
             case 0 -> getSquareQuestion(random, roomNumber);
             case 1 -> getSquareRootQuestion(random, roomNumber);
-            case 2 -> getGcdQuestion(random, roomNumber);
-            case 3 -> getFactorialQuestion(random, roomNumber);
-            case 4 -> getComplexMultiplicationQuestion(random, roomNumber);
+            case 2 -> get2toThePowerOfQuestion(random, roomNumber);
+            case 3 -> getGcdQuestion(random, roomNumber);
+            case 4 -> getFactorialQuestion(random, roomNumber);
+            case 5 -> getComplexMultiplicationQuestion(random, roomNumber);
             default -> ErrorUtil.unreachableCode();
         };
     }
