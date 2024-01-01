@@ -72,18 +72,20 @@ public abstract class Player implements Serializable {
 
     /**
      * Moves the player to the next room.
+     * @return {@code true} if the player stays in the dungeon, else {@code false}.
      */
-    public void enterNextRoom() {
+    public boolean enterNextRoom() {
         currentRoom.fillDoors();
         final Room nextRoom = selectDoor();
         oldRoom = currentRoom;
         currentRoom = nextRoom;
         if (currentRoom == null) {
-            return;
+            return false;
         }
+        System.out.printf("You enter room %d.%n", currentRoom.getId());
         final Task newTask = currentRoom.getTask();
         if (newTask == null) {
-            return;
+            return true;
         }
         if (!hasClearedTask(currentRoom.getId())) {
             newTask.accept(this);
@@ -93,8 +95,10 @@ public abstract class Player implements Serializable {
             }
             else {
                 currentRoom = oldRoom;
+                System.out.printf("You are back in room %d.%n", currentRoom.getId());
             }
         }
+        return true;
     }
 
     /**

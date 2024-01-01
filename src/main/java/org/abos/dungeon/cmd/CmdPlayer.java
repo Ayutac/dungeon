@@ -48,7 +48,7 @@ public class CmdPlayer extends Player {
         String selectionString;
         int selection;
         while (true) {
-            System.out.printf("You are in room %d. Select one door between 0 and %d: ", currentRoom.getId(), currentRoom.getDoorCount()-1);
+            System.out.printf("Select one door between 0 and %d: ", currentRoom.getDoorCount()-1);
             selectionString = scanner.nextLine();
             selectionString = selectionString.toLowerCase();
             if (selectionString.equals("no") || selectionString.equals("exit") || selectionString.equals("quit")) {
